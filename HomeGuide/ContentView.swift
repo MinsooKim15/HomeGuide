@@ -9,13 +9,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    var modelView : HomeModelView
     var body: some View {
-        Text("Hello, World!")
+        Button(action: modelView.getData, label: {Text("클릭")})
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
