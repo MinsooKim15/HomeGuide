@@ -15,10 +15,75 @@ struct HomeGuideModel{
     
     var subscriptions : Array<Subscription>
     var guides : Array<Guide>
+    var filters : Array<FilterCategory>
     
-    init() {
+    // MARK: - For UI
+    var isFilterOpen : Bool = false
+    
+    // MARK : - For Filtering
+    var choosenFilterCategory: FilterCategory?
+    
+    struct FilterCategory: Identifiable{
+        var id : Int
+        // It will be displayed
+        var titleDisplay : String
+        // it will be used for query
+        var titleQuery: String
+        var dataType : DataStyle
+        var optionList : Array<FilterOption>?
+        var filterRange : FilterRange?
+        var choosenFilterRange: FilterRange?
+        var isChoosen: Bool = false
+        
+        init(dictionary: Dictionary<String,Any>,id:Int) {
+            self.id = id
+            titleDisplay = dictionary["titleDisplay"] as! String
+            titleQuery = dictionary["titleQuery"] as! String
+            var tempList = [FilterOption]()
+
+            if (dictionary["type"] as! String ) == "discrete"{
+                dataType = .discrete
+                for option in (dictionary["optionList"] as! Array<String>){
+                    tempList.append(FilterOption(value : option))
+                }
+            }else{
+                dataType = .range
+                filterRange = FilterRange(array : (dictionary["optionRange"] as! Array<Double>))
+            
+            }
+            optionList = tempList
+        }
+    }
+    struct FilterRange{
+        var startData: Double
+        var endData : Double
+        init(array: Array<Double>) {
+            startData = array[0]
+            endData = array[1]
+        }
+    }
+    enum DataStyle {
+        case discrete
+        case range
+    }
+    
+    struct FilterOption:Hashable{
+        // It will be displayed and query
+        var value : String
+        var choosen : Bool = false
+    }
+    
+    
+    init(filtersArray:Array<Dictionary<String, Any>>) {
         subscriptions = [Subscription]()
         guides = [Guide]()
+        filters = [FilterCategory]()
+        var id = 0
+        for filterDictionary in filtersArray{
+            let filterValue = FilterCategory(dictionary: filterDictionary, id : id)
+            filters.append(filterValue)
+            id += 1
+        }
     }
     
     mutating func snapshotsTosubscriptions(snapshots:[QueryDocumentSnapshot]){
