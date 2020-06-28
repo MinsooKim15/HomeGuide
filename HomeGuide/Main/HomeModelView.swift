@@ -62,19 +62,41 @@ class HomeModelView:ObservableObject{
             }
         }
     }
+    //TODO : Filter Query - After Insert Enough Data
+    
+    
     // MARK: - Intents
     func openFilter(){
         model.isFilterOpen = true
     }
     func closeFilter(){
+        if let currentChoosenFilter = model.choosenFilterCategory {
+            if let choosenCurrentIndex = model.filters.firstIndex(matching: currentChoosenFilter){
+                // save current choosenFilter data to filters
+                model.filters[choosenCurrentIndex] = model.choosenFilterCategory!
+            }
+        }
+        model.choosenFilterCategory = nil
+        //TODO : Add GetData Query Method Here
         model.isFilterOpen = false
     }
     func chooseFilterCategory(filterCategory:HomeGuideModel.FilterCategory){
         print("----------------------------")
         print(filterCategory)
         if let choosenIndex = model.filters.firstIndex(matching:filterCategory){
+            if let currentChoosenFilter = model.choosenFilterCategory {
+                if let choosenCurrentIndex = model.filters.firstIndex(matching: currentChoosenFilter){
+                    // save current choosenFilter data to filters
+                    model.filters[choosenCurrentIndex] = model.choosenFilterCategory!
+                }
+            }
             model.choosenFilterCategory = model.filters[choosenIndex]
         }
     }
-
+    func chooseFilterOption(filterOption: HomeGuideModel.FilterOption){
+        if let choosenIndex = model.choosenFilterCategory!.optionList!.firstIndex(matching:filterOption){
+            //Toggle 합니다.
+            model.choosenFilterCategory!.optionList![choosenIndex].choosen = !model.choosenFilterCategory!.optionList![choosenIndex].choosen
+        }
+    }
 }

@@ -29,7 +29,6 @@ struct MainView: View {
     }
 }
 
-
 struct HeadView: View{
     var body: some View{
         Text("여기가 머리")
@@ -88,7 +87,17 @@ struct FilterDetailView: View{
             HStack{
                 Text("\(modelView.model.choosenFilterCategory!.titleDisplay)")
                 ForEach(modelView.model.choosenFilterCategory!.optionList!,id:\.self){ option in
-                    Text("\(option.value)")
+                    Group{
+                        if !option.choosen {
+                            Text("\(option.value)").onTapGesture {
+                                self.modelView.chooseFilterOption(filterOption: option)
+                            }
+                        }else{
+                            Text("\(option.value)").onTapGesture {
+                                self.modelView.chooseFilterOption(filterOption: option)
+                            }.foregroundColor(Color.red)
+                        }
+                    }
                 }
             }
         }

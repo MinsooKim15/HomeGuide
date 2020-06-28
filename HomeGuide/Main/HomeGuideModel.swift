@@ -43,8 +43,10 @@ struct HomeGuideModel{
 
             if (dictionary["type"] as! String ) == "discrete"{
                 dataType = .discrete
+                var filterId = 0
                 for option in (dictionary["optionList"] as! Array<String>){
-                    tempList.append(FilterOption(value : option))
+                    tempList.append(FilterOption(id: filterId, value : option))
+                    filterId += 1
                 }
             }else{
                 dataType = .range
@@ -67,7 +69,8 @@ struct HomeGuideModel{
         case range
     }
     
-    struct FilterOption:Hashable{
+    struct FilterOption:Identifiable, Hashable{
+        var id: Int
         // It will be displayed and query
         var value : String
         var choosen : Bool = false
