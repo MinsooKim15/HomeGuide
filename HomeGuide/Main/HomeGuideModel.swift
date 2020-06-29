@@ -22,6 +22,7 @@ struct HomeGuideModel{
     
     // MARK : - For Filtering
     var choosenFilterCategory: FilterCategory?
+
     
     struct FilterCategory: Identifiable{
         
@@ -68,6 +69,7 @@ struct HomeGuideModel{
             }
 
         }
+
         
         init(dictionary: Dictionary<String,Any>,id:Int) {
             self.id = id
@@ -154,7 +156,32 @@ struct HomeGuideModel{
         var officialLink : String?
         var naverLink : String?
         var documentLink : String?
-        var typeList : [HomeType]
+        var typeList : [HomeType]?
+        var lowestPrice : Price?
+        var highestPrice : Price?
+        var startDate: Date?
+        var endDate: Date?
+        var dateLeftInString : String?
+        var iconName: String {
+            if (self.buildingType == "아파트") || (self.buildingType == "apt"){
+                let number = Int.random(in: 1..<4)
+                let imgName = "apartIcon" + String(number)
+                return imgName
+            }else{
+                let imgName = "building"
+                return imgName
+            }
+        }
+        var totalSupply: Int{
+            var tempTotalSupply = 0
+            if let tempTypeList = self.typeList{
+                for homeType in tempTypeList{
+                    tempTotalSupply += homeType.totalSupply
+                }
+            }
+            return tempTotalSupply
+        }
+
         
         init(snapshot: QueryDocumentSnapshot) {
             id = snapshot.documentID
@@ -189,10 +216,165 @@ struct HomeGuideModel{
                     // TODO : - Array의 Index를 넣어주세요
                     let homeType = HomeType(
                         idNum: index, dictionary: element as! Dictionary<String,Any>)
-                    typeList.append(homeType)
+                    typeList?.append(homeType)
                 }
             }
+            lowestPrice = getLowestPrice()
+            highestPrice = getHighestPrice()
+            dateLeftInString = getDateLeftString()
+            startDate = getStartDate()
+            endDate = getEndDate()
         }
+        
+        func getEndDate()-> Date{
+            if self.dateSecondOther != nil{
+                return self.dateSecondOther!
+            }else if self.dateSecondNear != nil{
+                return self.dateSecondNear!
+            }else if self.dateFirstOther != nil{
+                return self.dateFirstOther!
+            }else if self.dateFirstNear != nil{
+                return self.dateFirstNear!
+            }else if self.dateSpecialSupplyOther != nil{
+                return self.dateSpecialSupplyOther!
+            }else{
+                return self.dateSpecialSupplyNear!
+            }
+        }
+        func getStartDate()-> Date{
+            if self.dateSpecialSupplyNear != nil{
+                return self.dateSpecialSupplyNear!
+            }else if self.dateSpecialSupplyOther != nil{
+                return self.dateSecondOther!
+            }else if self.dateFirstNear != nil{
+                return self.dateFirstNear!
+            }else if self.dateFirstOther != nil{
+                return self.dateFirstOther!
+            }else if self.dateSecondNear != nil{
+                return self.dateSecondNear!
+            }else{
+                return self.dateSecondOther!
+            }
+        }
+        func getHighestPrice()-> Price?{
+            if let tempTypeList = self.typeList {
+                var candidateHighPrice: Price? = nil
+                for homeType in tempTypeList{
+                    if candidateHighPrice == nil{
+                        candidateHighPrice = homeType.totalPrice
+                    }else{
+                        if homeType.totalPrice.inNumeric < candidateHighPrice!.inNumeric{
+                            candidateHighPrice = homeType.totalPrice
+                        }
+                    }
+                }
+                return candidateHighPrice
+            }else{
+                return nil
+            }
+        }
+        
+        
+        func getLowestPrice()-> Price?{
+            if let tempTypeList = self.typeList {
+                var candidateLowPrice: Price? = nil
+                
+                for homeType in tempTypeList{
+                    if candidateLowPrice == nil{
+                        candidateLowPrice = homeType.totalPrice
+                    }else{
+                        if homeType.totalPrice.inNumeric > candidateLowPrice!.inNumeric{
+                            candidateLowPrice = homeType.totalPrice
+                        }
+                    }
+                }
+                return candidateLowPrice
+            }else{
+                return nil
+            }
+            
+        }
+        func getDateLeftString() -> String?{
+            // MARK : Nil error 주의
+            var dateLeftString : String?
+            
+            if self.notPassed(dateSpecialSupplyNear!){
+               dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            }
+            if self.notPassed(dateSpecialSupplyOther!){
+                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            }
+            if self.notPassed(dateFirstNear!){
+                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            }
+            if self.notPassed(dateFirstOther!){
+                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            }
+            if self.notPassed(dateSecondNear!){
+                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            }
+            if self.notPassed(dateSecondOther!){
+                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            }
+            return dateLeftString
+        }
+        func getDateLeftString(from targetDate:Date) -> String{
+            let currentDate = Date()
+            let interval = targetDate - currentDate
+            
+            let cal = Calendar.current
+            
+            let currentMonth = cal.component(.month, from: currentDate)
+            let currentWeek = cal.component(.weekOfYear, from: currentDate)
+            let currentDay = cal.component(.day, from: currentDate)
+            
+            
+            let targetMonth = cal.component(.month, from: targetDate)
+            let targetWeek = cal.component(.weekOfYear, from : targetDate)
+            let targetDay = cal.component(.day, from: targetDate)
+            let dayDiff = targetDay - currentDay
+            let weekDiff = (targetWeek - currentWeek)
+            let monthDiff = (targetMonth - currentMonth)
+            
+            var resultString = ""
+            // 같은 달 안 인가?
+            
+            if (interval.day == 0)&&(dayDiff == 0){
+                resultString = "오늘"
+            }else if (targetMonth == currentMonth)&&(dayDiff < 7){
+                resultString = "D-\(dayDiff)"
+            }else{
+                resultString = "\(targetMonth)/\(targetDay)"
+            }
+//
+//
+//
+//
+//            var string = ""
+//            if targetWeek > currentWeek{
+//                if ((weekDiff <= 4) || (monthDiff == 0)){
+//                    string = "\(weekDiff)주 후"
+//                }else{
+//                    string = "\(monthDiff)개월 뒤"
+//                }
+//            }else{
+//
+//                if dayDiff == 0 {
+//                    string = "오늘"
+//                }else{
+//                    string = "D - \(dayDiff)"
+//                }
+//            }
+            return resultString
+        }
+        func notPassed(_ targetDate:Date)-> Bool{
+            if targetDate >= Date(){
+                return true
+            }else{
+                return false
+            }
+        }
+        
     }
 
     
@@ -201,6 +383,21 @@ struct HomeGuideModel{
         var provinceKor : String
         var detailFirst : String?
         var detailSecond : String?
+        var full:String
+        init(provinceCode: String, provinceKor: String, detailFirst : String?, detailSecond: String?){
+            self.provinceCode = provinceCode
+            self.provinceKor = provinceKor
+            self.detailFirst = detailFirst
+            self.detailSecond = detailSecond
+            var fullString = provinceKor
+            if self.detailFirst != nil{
+                fullString = fullString + " " + self.detailFirst!
+            }
+            if self.detailSecond != nil{
+                fullString = fullString + " " + self.detailSecond!
+            }
+            self.full = fullString
+        }
     }
     struct Guide{
         var id : String
@@ -254,6 +451,16 @@ struct HomeGuideModel{
     struct Price{
         var inText : String
         var inNumeric : Int
+        init(_ priceInNumeric: Int){
+            self.inNumeric = priceInNumeric
+            var numericDivided = (Double(self.inNumeric)/100000000.0)
+            numericDivided = (numericDivided * 100.0).rounded() / 100
+            self.inText = String(numericDivided) + "억 원"
+        }
+        init(inText: String, inNumeric:Int){
+            self.inText = inText
+            self.inNumeric = inNumeric
+        }
     }
     struct Size{
         var inMeter : Float

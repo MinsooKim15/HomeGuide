@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */; };
+		02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1A24AA3B21008E7BF4 /* Cardify.swift */; };
 		02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882224A4EF3200237AB3 /* HomeModelView.swift */; };
 		02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882424A4F43700237AB3 /* HomeGuideModel.swift */; };
 		02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */; };
@@ -32,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		0103E5853D7920A0D01959F2 /* Pods_HomeGuide.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeGuide.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Subtract.swift"; sourceTree = "<group>"; };
+		02B20A1A24AA3B21008E7BF4 /* Cardify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cardify.swift; sourceTree = "<group>"; };
 		02E5882224A4EF3200237AB3 /* HomeModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModelView.swift; sourceTree = "<group>"; };
 		02E5882424A4F43700237AB3 /* HomeGuideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideModel.swift; sourceTree = "<group>"; };
 		02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailView.swift; sourceTree = "<group>"; };
@@ -76,6 +80,7 @@
 				02E5882424A4F43700237AB3 /* HomeGuideModel.swift */,
 				02F8DADB24A4E5D70066D114 /* MainView.swift */,
 				02E5884224A9BC4500237AB3 /* Burblify.swift */,
+				02B20A1A24AA3B21008E7BF4 /* Cardify.swift */,
 				02E5882224A4EF3200237AB3 /* HomeModelView.swift */,
 			);
 			path = Main;
@@ -132,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				02E5884424A9D58C00237AB3 /* Color+Hex.swift */,
+				02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */,
 				02E5883224A82C0200237AB3 /* SubscriptionDetail */,
 				02E5882B24A8263300237AB3 /* Setting */,
 				02E5882A24A825EF00237AB3 /* Main */,
@@ -301,9 +307,11 @@
 				02E5884524A9D58D00237AB3 /* Color+Hex.swift in Sources */,
 				02F8DADC24A4E5D70066D114 /* MainView.swift in Sources */,
 				02E5882D24A8264C00237AB3 /* SettingModel.swift in Sources */,
+				02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */,
 				02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */,
 				02E5882924A794B700237AB3 /* Array+Identifiable.swift in Sources */,
 				02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */,
+				02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */,
 				02E5884324A9BC4500237AB3 /* Burblify.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

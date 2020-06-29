@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MainView: View {
     @ObservedObject var modelView : HomeModelView
+    @State var navBarHidden: Bool = true
     // 여기서 배경색 컨트롤
     let backgroundColorView: some View = Color(hex:"F0F0F0")
     
@@ -24,17 +25,38 @@ struct MainView: View {
                         FilterView(modelView:modelView)
                         Spacer().frame(height:3)
                             if !modelView.model.isFilterOpen{
-                                        List{
+                                List{
                                             ForEach(modelView.model.subscriptions, id:\.self.id){subscription in
-                                                NavigationLink(destination: SubscriptionDetailView(subscription: subscription)){
-                                                    SubscriptionCardView(subscription: subscription)
-                                                }
+                                                VStack{
+                                                    ZStack(alignment:.leading){
+                                                        Color.white
+                                                        SubscriptionCardView(subscription: subscription).frame(minWidth:0, maxWidth:.infinity)
+                                                        NavigationLink(destination: SubscriptionDetailView(subscription: subscription)){
+                                                            EmptyView()
+                                                        }
+                                                        .buttonStyle(PlainButtonStyle())
+                                                        .frame(width: 0)
+                                                        .opacity(0)
+                                                    }
+                                                }.listRowInsets(EdgeInsets())
                                              }
                                         }
+                                        .onAppear {
+                                            UITableView.appearance().backgroundColor = Color(hex:"F0F0F0").uiColor()
+                                            UITableView.appearance().separatorStyle = .none
+                                            UITableViewCell.appearance().backgroundColor = .clear
+                                }
+                                        .onDisappear {       UITableView.appearance().separatorStyle = .singleLine     }
                                     }
                             }
                         .navigationBarTitle("")
                         .navigationBarHidden(true)
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                    self.navBarHidden = true
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+                    self.navBarHidden = false
+                }
                 }
             }
     }
@@ -80,7 +102,7 @@ struct FilterView: View{
     let maxBubbleWidth = CGFloat(120)
     let maxBubbleHeight = CGFloat(30)
     let customFontRegular = "NanaumSquareOTFR"
-    let fontSize = CGFloat(16)
+    let fontSize = CGFloat(14)
     let frameHeight = CGFloat(80)
     let unOpenedMaxHeight = CGFloat(70)
     var body: some View{
@@ -153,16 +175,20 @@ struct FilterDetailView: View{
                 ScrollView{
                     HStack{
                         Text("\(modelView.model.choosenFilterCategory!.titleDisplay)")
-                        ForEach(modelView.model.choosenFilterCategory!.optionList!,id:\.self){ option in
-                            Group{
-                                if !option.choosen {
-                                    Text("\(option.value)").onTapGesture {
-                                        self.modelView.chooseFilterOption(filterOption: option)
+                        Group{
+                            if modelView.model.choosenFilterCategory!.optionList != nil{
+                                ForEach(modelView.model.choosenFilterCategory!.optionList!,id:\.self){ option in
+                                    Group{
+                                        if !option.choosen {
+                                            Text("\(option.value)").onTapGesture {
+                                                self.modelView.chooseFilterOption(filterOption: option)
+                                            }
+                                        }else{
+                                            Text("\(option.value)").onTapGesture {
+                                                self.modelView.chooseFilterOption(filterOption: option)
+                                            }.foregroundColor(Color.red)
+                                        }
                                     }
-                                }else{
-                                    Text("\(option.value)").onTapGesture {
-                                        self.modelView.chooseFilterOption(filterOption: option)
-                                    }.foregroundColor(Color.red)
                                 }
                             }
                         }
@@ -175,12 +201,77 @@ struct FilterDetailView: View{
 
 struct SubscriptionCardView: View{
     var subscription : HomeGuideModel.Subscription
+    
+    
+    // MARK: - Control Panel for UI
+    let customFontRegular = "NanaumSquareOTFR"
+    let customFontLight = "NanaumSquareOTFL"
+    let customFontBold = "NanaumSquareOTFB"
+    let customFontExtraBold = "NanaumSquareOTFEB"
+    let titleFontSize = CGFloat(24)
+    let descriptionAFontSize = CGFloat(16)
+    let descriptionBFontSize = CGFloat(14)
+    let priceFontSize = CGFloat(20)
+    
+    let paddingToLead = CGFloat(20)
+    
+    let titlePaddingTop = CGFloat(20)
+    let descriptionAPaddingTop = CGFloat(14)
+    let descriptionBPaddingTop = CGFloat(8)
+    let descriptionBPaddingBottom = CGFloat(18)
+    
+    let fontColorHighlight = Color(hex: "FF4162")
+    let fontColorDescriptionB = Color(hex:"A0A0A2")
+    let datePaddingToTrail = CGFloat(32)
+
+    
     var body: some View{
-        VStack{
-            Text(subscription.title)
-            Text(subscription.address.provinceKor + (subscription.address.detailFirst ?? ""))
-            Text(subscription.buildingType + subscription.subscriptionType)
-        }
+                    HStack{
+                        VStack(alignment:.leading){
+                            Text(subscription.title)
+                                .font(.custom(self.customFontExtraBold, size: self.titleFontSize))
+                                .padding([.top], self.titlePaddingTop)
+                            Text(subscription.address.full)
+                                .font(.custom(self.customFontRegular,size:self.descriptionAFontSize))
+                                .padding([.top], self.descriptionAPaddingTop)
+                            HStack{
+                                Text(subscription.buildingType)
+                                Text("|")
+                                Text(subscription.subscriptionType)
+                                Group{
+                                    Text("|")
+                                    if subscription.lowestPrice != nil{
+                                        Text(subscription.lowestPrice!.inText + "부터")
+                                    }
+                                }
+                            }
+                                .font(.custom(self.customFontRegular,size:self.descriptionBFontSize))
+                                .padding([.top], self.descriptionBPaddingTop)
+                                .padding([.bottom], self.descriptionBPaddingBottom)
+                                .foregroundColor(self.fontColorDescriptionB)
+                        }.padding([.leading], self.paddingToLead)
+                        Spacer()
+                        VStack{
+                        Group{
+                            if subscription.dateLeftInString != nil{
+                                HStack{
+                                    Text(subscription.dateLeftInString!)
+                                        .font(.custom(self.customFontBold, size: self.priceFontSize))
+                                        .foregroundColor(self.fontColorHighlight)
+                                    Spacer().frame(width: self.datePaddingToTrail)
+                                }
+                            }
+                            }
+            //            Group{
+            //                if subscription.lowestPrice != nil{
+            //                        Text(subscription.lowestPrice!.inText)
+            //                            .font(.custom(self.customFontBold, size : self.priceFontSize)) .foregroundColor(self.fontColorHighlight)
+            //                        Text("부터")
+            //                }
+            //            }
+                        }.font(.custom(self.customFontRegular, size : self.descriptionBFontSize))
+                        // TODO : Image 넣기 없으면 기본 이미지 로직까지 - 이미지는 먼 미래
+                    }
     }
 }
 
