@@ -14,6 +14,12 @@
 		02E5882D24A8264C00237AB3 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882C24A8264C00237AB3 /* SettingModel.swift */; };
 		02E5882F24A8265A00237AB3 /* SettingModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882E24A8265A00237AB3 /* SettingModelView.swift */; };
 		02E5883124A8266A00237AB3 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5883024A8266A00237AB3 /* SettingView.swift */; };
+		02E5883B24A9A42A00237AB3 /* NanumSquareOTFLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02E5883724A9A42600237AB3 /* NanumSquareOTFLight.otf */; };
+		02E5883C24A9A42A00237AB3 /* NanumSquareOTFRegular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02E5883824A9A42700237AB3 /* NanumSquareOTFRegular.otf */; };
+		02E5883D24A9A42A00237AB3 /* NanumSquareOTFExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02E5883924A9A42800237AB3 /* NanumSquareOTFExtraBold.otf */; };
+		02E5883E24A9A42A00237AB3 /* NanumSquareOTFBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02E5883A24A9A42900237AB3 /* NanumSquareOTFBold.otf */; };
+		02E5884324A9BC4500237AB3 /* Burblify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5884224A9BC4500237AB3 /* Burblify.swift */; };
+		02E5884524A9D58D00237AB3 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5884424A9D58C00237AB3 /* Color+Hex.swift */; };
 		02F8DAD824A4E5D70066D114 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F8DAD724A4E5D70066D114 /* AppDelegate.swift */; };
 		02F8DADA24A4E5D70066D114 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F8DAD924A4E5D70066D114 /* SceneDelegate.swift */; };
 		02F8DADC24A4E5D70066D114 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F8DADB24A4E5D70066D114 /* MainView.swift */; };
@@ -33,6 +39,12 @@
 		02E5882C24A8264C00237AB3 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
 		02E5882E24A8265A00237AB3 /* SettingModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModelView.swift; sourceTree = "<group>"; };
 		02E5883024A8266A00237AB3 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		02E5883724A9A42600237AB3 /* NanumSquareOTFLight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareOTFLight.otf; sourceTree = "<group>"; };
+		02E5883824A9A42700237AB3 /* NanumSquareOTFRegular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareOTFRegular.otf; sourceTree = "<group>"; };
+		02E5883924A9A42800237AB3 /* NanumSquareOTFExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareOTFExtraBold.otf; sourceTree = "<group>"; };
+		02E5883A24A9A42900237AB3 /* NanumSquareOTFBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareOTFBold.otf; sourceTree = "<group>"; };
+		02E5884224A9BC4500237AB3 /* Burblify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Burblify.swift; sourceTree = "<group>"; };
+		02E5884424A9D58C00237AB3 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		02F8DAD424A4E5D70066D114 /* HomeGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02F8DAD724A4E5D70066D114 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		02F8DAD924A4E5D70066D114 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +75,7 @@
 			children = (
 				02E5882424A4F43700237AB3 /* HomeGuideModel.swift */,
 				02F8DADB24A4E5D70066D114 /* MainView.swift */,
+				02E5884224A9BC4500237AB3 /* Burblify.swift */,
 				02E5882224A4EF3200237AB3 /* HomeModelView.swift */,
 			);
 			path = Main;
@@ -86,6 +99,17 @@
 			path = SubscriptionDetail;
 			sourceTree = "<group>";
 		};
+		02E5883F24A9A43200237AB3 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				02E5883A24A9A42900237AB3 /* NanumSquareOTFBold.otf */,
+				02E5883924A9A42800237AB3 /* NanumSquareOTFExtraBold.otf */,
+				02E5883724A9A42600237AB3 /* NanumSquareOTFLight.otf */,
+				02E5883824A9A42700237AB3 /* NanumSquareOTFRegular.otf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		02F8DACB24A4E5D70066D114 = {
 			isa = PBXGroup;
 			children = (
@@ -107,9 +131,11 @@
 		02F8DAD624A4E5D70066D114 /* HomeGuide */ = {
 			isa = PBXGroup;
 			children = (
+				02E5884424A9D58C00237AB3 /* Color+Hex.swift */,
 				02E5883224A82C0200237AB3 /* SubscriptionDetail */,
 				02E5882B24A8263300237AB3 /* Setting */,
 				02E5882A24A825EF00237AB3 /* Main */,
+				02E5883F24A9A43200237AB3 /* Fonts */,
 				02F8DAEB24A4E60F0066D114 /* GoogleService-Info.plist */,
 				02F8DAD724A4E5D70066D114 /* AppDelegate.swift */,
 				02F8DAD924A4E5D70066D114 /* SceneDelegate.swift */,
@@ -210,7 +236,11 @@
 				02F8DAE424A4E5D90066D114 /* LaunchScreen.storyboard in Resources */,
 				02F8DAEC24A4E60F0066D114 /* GoogleService-Info.plist in Resources */,
 				02F8DAE124A4E5D90066D114 /* Preview Assets.xcassets in Resources */,
+				02E5883C24A9A42A00237AB3 /* NanumSquareOTFRegular.otf in Resources */,
+				02E5883B24A9A42A00237AB3 /* NanumSquareOTFLight.otf in Resources */,
+				02E5883D24A9A42A00237AB3 /* NanumSquareOTFExtraBold.otf in Resources */,
 				02F8DADE24A4E5D90066D114 /* Assets.xcassets in Resources */,
+				02E5883E24A9A42A00237AB3 /* NanumSquareOTFBold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,11 +298,13 @@
 				02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */,
 				02F8DAD824A4E5D70066D114 /* AppDelegate.swift in Sources */,
 				02F8DADA24A4E5D70066D114 /* SceneDelegate.swift in Sources */,
+				02E5884524A9D58D00237AB3 /* Color+Hex.swift in Sources */,
 				02F8DADC24A4E5D70066D114 /* MainView.swift in Sources */,
 				02E5882D24A8264C00237AB3 /* SettingModel.swift in Sources */,
 				02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */,
 				02E5882924A794B700237AB3 /* Array+Identifiable.swift in Sources */,
 				02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */,
+				02E5884324A9BC4500237AB3 /* Burblify.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

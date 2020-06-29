@@ -24,6 +24,7 @@ struct HomeGuideModel{
     var choosenFilterCategory: FilterCategory?
     
     struct FilterCategory: Identifiable{
+        
         var id : Int
         // It will be displayed
         var titleDisplay : String
@@ -33,7 +34,40 @@ struct HomeGuideModel{
         var optionList : Array<FilterOption>?
         var filterRange : FilterRange?
         var choosenFilterRange: FilterRange?
-        var isChoosen: Bool = false
+        var isChoosen: Bool {
+            var choosen = false
+            if let tempOptionList = optionList{
+                for option in tempOptionList{
+                    if option.choosen{
+                        choosen = true
+                    }
+                }
+            }
+            return choosen
+        }
+        var choosenOptionString:String{
+            var choosenString = ""
+            var choosenCounter = 0
+            if isChoosen{
+                if let tempOptionList = optionList{
+                    for option in tempOptionList{
+                        if option.choosen{
+                            if choosenString == ""{
+                                choosenString = String(option.value)
+                                choosenCounter = 1
+                            }else{
+                                choosenString = choosenString + " 외 \(choosenCounter)"
+                                choosenCounter += 1
+                            }
+                        }
+                    }
+                }
+                return choosenString
+            }else{
+                return self.titleDisplay
+            }
+
+        }
         
         init(dictionary: Dictionary<String,Any>,id:Int) {
             self.id = id

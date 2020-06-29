@@ -60,6 +60,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    // MARK: - Appearance
+//    fileprivate func setupAppearance() {
+//        UINavigationBar.appearance().
+//    }
 
 }
 
