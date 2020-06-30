@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */; };
 		02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1A24AA3B21008E7BF4 /* Cardify.swift */; };
+		02B20A1D24AADF26008E7BF4 /* AdjustFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */; };
+		02B20A1F24AAE659008E7BF4 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */; };
 		02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882224A4EF3200237AB3 /* HomeModelView.swift */; };
 		02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882424A4F43700237AB3 /* HomeGuideModel.swift */; };
 		02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */; };
@@ -36,6 +38,8 @@
 		0103E5853D7920A0D01959F2 /* Pods_HomeGuide.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeGuide.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Subtract.swift"; sourceTree = "<group>"; };
 		02B20A1A24AA3B21008E7BF4 /* Cardify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cardify.swift; sourceTree = "<group>"; };
+		02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustFont.swift; sourceTree = "<group>"; };
+		02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
 		02E5882224A4EF3200237AB3 /* HomeModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModelView.swift; sourceTree = "<group>"; };
 		02E5882424A4F43700237AB3 /* HomeGuideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideModel.swift; sourceTree = "<group>"; };
 		02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailView.swift; sourceTree = "<group>"; };
@@ -82,6 +86,8 @@
 				02E5884224A9BC4500237AB3 /* Burblify.swift */,
 				02B20A1A24AA3B21008E7BF4 /* Cardify.swift */,
 				02E5882224A4EF3200237AB3 /* HomeModelView.swift */,
+				02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */,
+				02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -302,9 +308,11 @@
 				02E5882F24A8265A00237AB3 /* SettingModelView.swift in Sources */,
 				02E5883124A8266A00237AB3 /* SettingView.swift in Sources */,
 				02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */,
+				02B20A1D24AADF26008E7BF4 /* AdjustFont.swift in Sources */,
 				02F8DAD824A4E5D70066D114 /* AppDelegate.swift in Sources */,
 				02F8DADA24A4E5D70066D114 /* SceneDelegate.swift in Sources */,
 				02E5884524A9D58D00237AB3 /* Color+Hex.swift in Sources */,
+				02B20A1F24AAE659008E7BF4 /* Color+Extension.swift in Sources */,
 				02F8DADC24A4E5D70066D114 /* MainView.swift in Sources */,
 				02E5882D24A8264C00237AB3 /* SettingModel.swift in Sources */,
 				02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */,

@@ -204,15 +204,7 @@ struct SubscriptionCardView: View{
     
     
     // MARK: - Control Panel for UI
-    let customFontRegular = "NanaumSquareOTFR"
-    let customFontLight = "NanaumSquareOTFL"
-    let customFontBold = "NanaumSquareOTFB"
-    let customFontExtraBold = "NanaumSquareOTFEB"
-    let titleFontSize = CGFloat(24)
-    let descriptionAFontSize = CGFloat(16)
-    let descriptionBFontSize = CGFloat(14)
     let priceFontSize = CGFloat(20)
-    
     let paddingToLead = CGFloat(20)
     
     let titlePaddingTop = CGFloat(20)
@@ -224,15 +216,18 @@ struct SubscriptionCardView: View{
     let fontColorDescriptionB = Color(hex:"A0A0A2")
     let datePaddingToTrail = CGFloat(32)
 
-    
+    let sectionTitleFontStyle = CustomFontStyle.headTitle
+    let sectionDescriptionAFontStyle = CustomFontStyle.headDescriptionA
+    let sectionDescriptionBFontStyle = CustomFontStyle.headDescriptionB
+
     var body: some View{
                     HStack{
                         VStack(alignment:.leading){
                             Text(subscription.title)
-                                .font(.custom(self.customFontExtraBold, size: self.titleFontSize))
+                                .adjustFont(fontStyle: self.sectionTitleFontStyle)
                                 .padding([.top], self.titlePaddingTop)
                             Text(subscription.address.full)
-                                .font(.custom(self.customFontRegular,size:self.descriptionAFontSize))
+                                .adjustFont(fontStyle:self.sectionDescriptionAFontStyle)
                                 .padding([.top], self.descriptionAPaddingTop)
                             HStack{
                                 Text(subscription.buildingType)
@@ -245,7 +240,7 @@ struct SubscriptionCardView: View{
                                     }
                                 }
                             }
-                                .font(.custom(self.customFontRegular,size:self.descriptionBFontSize))
+
                                 .padding([.top], self.descriptionBPaddingTop)
                                 .padding([.bottom], self.descriptionBPaddingBottom)
                                 .foregroundColor(self.fontColorDescriptionB)
@@ -256,7 +251,7 @@ struct SubscriptionCardView: View{
                             if subscription.dateLeftInString != nil{
                                 HStack{
                                     Text(subscription.dateLeftInString!)
-                                        .font(.custom(self.customFontBold, size: self.priceFontSize))
+                                        .adjustFont(fontStyle:.headDescriptionA)
                                         .foregroundColor(self.fontColorHighlight)
                                     Spacer().frame(width: self.datePaddingToTrail)
                                 }
@@ -269,12 +264,11 @@ struct SubscriptionCardView: View{
             //                        Text("부터")
             //                }
             //            }
-                        }.font(.custom(self.customFontRegular, size : self.descriptionBFontSize))
+                        }                            .adjustFont(fontStyle:self.sectionDescriptionBFontStyle)
                         // TODO : Image 넣기 없으면 기본 이미지 로직까지 - 이미지는 먼 미래
                     }
     }
 }
-
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
