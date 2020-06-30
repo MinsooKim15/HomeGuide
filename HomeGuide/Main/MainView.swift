@@ -31,7 +31,7 @@ struct MainView: View {
                                                     ZStack(alignment:.leading){
                                                         Color.white
                                                         SubscriptionCardView(subscription: subscription).frame(minWidth:0, maxWidth:.infinity)
-                                                        NavigationLink(destination: SubscriptionDetailView(subscription: subscription)){
+                                                        NavigationLink(destination: SubscriptionDetailView(subscription: subscription, modelView:self.modelView)){
                                                             EmptyView()
                                                         }
                                                         .buttonStyle(PlainButtonStyle())

@@ -99,4 +99,7 @@ class HomeModelView:ObservableObject{
             model.choosenFilterCategory!.optionList![choosenIndex].choosen = !model.choosenFilterCategory!.optionList![choosenIndex].choosen
         }
     }
+    func chooseHomeType(subscription:HomeGuideModel.Subscription , homeType: HomeGuideModel.HomeType){
+        model.chooseHomeType(subscription:subscription, homeType:homeType)
+    }
 }

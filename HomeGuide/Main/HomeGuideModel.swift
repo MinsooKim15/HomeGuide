@@ -136,7 +136,16 @@ struct HomeGuideModel{
         }
     }
     
-    struct Subscription{
+    mutating func chooseHomeType(subscription:Subscription, homeType:HomeType){
+        if let chosenIndex:Int = self.subscriptions.firstIndex(matching: subscription){
+            if let choosenHomeTypeIndex = self.subscriptions[chosenIndex].typeList?.firstIndex(matching: homeType){
+                self.subscriptions[chosenIndex].choosenHomeType = self.subscriptions[chosenIndex].typeList![choosenHomeTypeIndex]
+            }
+        }
+    }
+    
+    
+    struct Subscription : Identifiable{
         var id : String
         var title : String
         var address : Address
@@ -162,6 +171,7 @@ struct HomeGuideModel{
         var startDate: Date?
         var endDate: Date?
         var dateLeftInString : String?
+        var choosenHomeType: HomeType?
         var iconName: String {
             if (self.buildingType == "아파트") || (self.buildingType == "apt"){
                 let number = Int.random(in: 1..<4)
@@ -415,7 +425,11 @@ struct HomeGuideModel{
         }
     }
     
-    struct HomeType{
+    struct HomeType : Identifiable ,Equatable{
+        static func == (lhs: HomeGuideModel.HomeType, rhs: HomeGuideModel.HomeType) -> Bool {
+            return lhs.id == rhs.id
+        }
+        
         var id : String
         var title : String
         var generalSupply : Int?
@@ -430,6 +444,7 @@ struct HomeGuideModel{
         var needMoneyFinal : Int
         var loanLimit : Int
         var size : Size
+        var isChoosen:Bool = false
         init(idNum : Int, dictionary: Dictionary<String, Any>){
             id = "homeType_" + String(idNum)
             title = (dictionary["title"] as? String)!

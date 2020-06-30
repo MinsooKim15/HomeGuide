@@ -39,7 +39,7 @@ struct FontModifier: AnimatableModifier{
         case .sectionDescription:
             return Font.custom(self.customFontRegular, size:CGFloat(12))
         case .sectionTitle:
-            return Font.custom(self.customFontBold, size:CGFloat(16))
+            return Font.custom(self.customFontExtraBold, size:CGFloat(18))
         case .headTitle:
             return Font.custom(self.customFontBold, size:CGFloat(24))
         case .headDescriptionA:

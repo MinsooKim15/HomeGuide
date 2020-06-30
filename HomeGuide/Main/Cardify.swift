@@ -17,19 +17,45 @@ struct Cardify: AnimatableModifier{
     let backgroundGreyView : some View = Color(hex:"F0F0F0")
     let paddingToLead = CGFloat(20)
     let paddingBetweenCard = CGFloat(6)
+    var paddingTop:CGFloat{
+        switch style{
+        case .head:
+            return CGFloat(0)
+        case .body:
+            return CGFloat(40)
+        }
+    }
+    var paddingBottom:CGFloat{
+        switch style{
+        case .head:
+            return CGFloat(0)
+        case .body:
+            return CGFloat(40)
+        }
+    }
+    var paddingTrail = CGFloat(20)
+    var style : CardifyStyle
     func body(content: Content) -> some View{
         VStack{
+            
             ZStack{
                 backgroundView
                 content
                     .padding([.leading], self.paddingToLead)
+                    .padding([.top], self.paddingTop)
+                    .padding([.bottom], self.paddingBottom)
+                    .padding([.trailing], self.paddingTrail)
             }
             Spacer().frame(height: paddingBetweenCard)
         }.listRowInsets(EdgeInsets())
     }
 }
 extension View{
-    func cardify() -> some View{
-        self.modifier(Cardify())
+    func cardify(_ style: CardifyStyle = CardifyStyle.body) -> some View{
+        self.modifier(Cardify(style:style))
     }
+}
+enum CardifyStyle{
+    case head
+    case body
 }
