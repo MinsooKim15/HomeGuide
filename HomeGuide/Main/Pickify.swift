@@ -22,7 +22,7 @@ struct Pickify: AnimatableModifier{
             return Color.whiteGrey
         }
     }
-    var blankSpace = CGFloat(0.1)
+    var blankSpace = CGFloat(0.15)
     var fontColor : Color {
         if isChoosen{
             return Color.white

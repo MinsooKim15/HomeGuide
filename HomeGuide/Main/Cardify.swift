@@ -23,6 +23,9 @@ struct Cardify: AnimatableModifier{
             return CGFloat(0)
         case .body:
             return CGFloat(40)
+        case .small:
+            return CGFloat(12)
+
         }
     }
     var paddingBottom:CGFloat{
@@ -31,6 +34,8 @@ struct Cardify: AnimatableModifier{
             return CGFloat(0)
         case .body:
             return CGFloat(40)
+        case .small:
+            return CGFloat(12)
         }
     }
     var paddingTrail = CGFloat(20)
@@ -58,4 +63,5 @@ extension View{
 enum CardifyStyle{
     case head
     case body
+    case small
 }

@@ -21,9 +21,15 @@ struct Cellify: AnimatableModifier{
 //        }
 //    }
     var blankSpace = CGFloat(0.1)
+    var color : Color?
     
     func body(content: Content) -> some View{
         ZStack{
+            Group{
+                if color != nil{
+                    Rectangle().fill().foregroundColor(color!)
+                }
+            }
             Rectangle().stroke().foregroundColor(Color.grey)
             content
         }
@@ -31,6 +37,9 @@ struct Cellify: AnimatableModifier{
     }
 }
 extension View{
+    func cellify(color:Color) -> some View{
+        self.modifier(Cellify(color:color))
+    }
     func cellify() -> some View{
         self.modifier(Cellify())
     }
