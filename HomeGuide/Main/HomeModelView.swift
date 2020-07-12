@@ -26,7 +26,7 @@ class HomeModelView:ObservableObject{
                 "titleDisplay": "분양 형태",
                 "titleQuery" : "subscriptionType",
                 "type" : "discrete",
-                "optionList" : ["국민임대", "장기전세", "민간분양", "일반 민간임대", "10년 공공임대", "영구임대", "5년 공공임대", "공공분양", "5년 민간임대", "뉴스테이", "행복주택", "분납임대"]
+                "optionList" : ["공공", "민영", "공공 임대"]
         ],
             [
                 "titleDisplay" : "건물",
@@ -34,19 +34,21 @@ class HomeModelView:ObservableObject{
                 "type": "discrete",
                 "optionList": ["아파트", "오피스텔", "기타"]
             ],
-            [
-                "titleDisplay" : "가격",
-                "titleQuery" : "totalPrice",
-                "type" : "range",
-                //억 단위 표시
-                "optionRange" : [0.0,50.0]
-            ],
-            [
-                "titleDisplay" : "평형",
-                "titleQuery" : "size",
-                "type" : "range",
-                "optionRange" : [0.0, 50.0]
-            ]
+//            [
+//                "titleDisplay" : "가격",
+//                "titleQuery" : "totalPrice",
+//                "type" : "range",
+//                //억 단위 표시
+//                "optionRange" : [0.0,5000000000],
+//                "optionInterval": 10000000.0
+//            ],
+//            [
+//                "titleDisplay" : "평형",
+//                "titleQuery" : "size",
+//                "type" : "range",
+//                "optionRange" : [0.0, 50.0],
+//                "optionInterval" : 3.0
+//            ]
         ]
         let model = HomeGuideModel(filtersArray: filters)
         return model
@@ -93,7 +95,22 @@ class HomeModelView:ObservableObject{
             model.choosenFilterCategory = model.filters[choosenIndex]
         }
     }
+    func chooseFilterOption(filterCategory: HomeGuideModel.FilterCategory, filterOption: HomeGuideModel.FilterOption){
+        if let choosenCategoryIndex = model.filters.firstIndex(matching: filterCategory){
+            if let choosenIndex = model.filters[choosenCategoryIndex].optionList!.firstIndex(matching:filterOption){
+                //Toggle 합니다.
+                print(model.filters[choosenCategoryIndex].isLastOption(filterOption))
+                if !model.filters[choosenCategoryIndex].isLastOption(filterOption){
+                    // 마지막 선택 옵션이 아닌 경우에만 토글함
+                    print()
+                    model.filters[choosenCategoryIndex].optionList![choosenIndex].choosen = !model.filters[choosenCategoryIndex].optionList![choosenIndex].choosen
+                }
+                
+            }
+        }
+    }
     func chooseFilterOption(filterOption: HomeGuideModel.FilterOption){
+        // TODO : 만약 모든 Filter가 False가 되게 생기면 변화를 주지 않는 로직 추가하기
         if let choosenIndex = model.choosenFilterCategory!.optionList!.firstIndex(matching:filterOption){
             //Toggle 합니다.
             model.choosenFilterCategory!.optionList![choosenIndex].choosen = !model.choosenFilterCategory!.optionList![choosenIndex].choosen

@@ -11,10 +11,26 @@ import SwiftUI
 struct SubscriptionDetailView : View{
     var subscription: HomeGuideModel.Subscription
     @ObservedObject var modelView : HomeModelView
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    let navBarPaddingToLead = CGFloat(20)
+    let navBarPaddingToTop = CGFloat(20)
+    let navBarMaxHeight = CGFloat(50)
     var body: some View{
-        VStack{
+        VStack(spacing:0){
+            VStack(spacing:0){
+                HStack{
+                    Button(action:{self.presentationMode.wrappedValue.dismiss()} ){
+                        return Image(systemName: "chevron.left").foregroundColor(.coralRed)
+                    }
+                    .padding([.leading], self.navBarPaddingToLead)
+                    .padding([.top], self.navBarPaddingToTop)
+                    Spacer()
+                }
+                Spacer()
+                ExDivider()
+            }
+            .frame(maxHeight: self.navBarMaxHeight)
             List{
-                
                 SubscriptionHeadView(subscription : subscription).cardify(.head)
                 SubscriptionSummaryView(subscription: subscription).cardify()
                 SubscriptionScheduleView(subscription : subscription).cardify()
@@ -25,9 +41,11 @@ struct SubscriptionDetailView : View{
                 if subscription.officialLink != nil{
                     SubscriptionLinkView(title: "청약홈에서 보기", link : subscription.officialLink!).cardify(.small)
                 }
+                Banner()
                 if subscription.documentLink != nil{
                     SubscriptionLinkView(title: "공고 파일 보기", link : subscription.documentLink!).cardify(.small)
                 }
+                
             }.listRowInsets(EdgeInsets())
             }
         .navigationBarTitle("")
@@ -153,6 +171,7 @@ struct SubscriptionScheduleView: View{
         VStack{
             HStack{
               Text("분양 일정")
+                .adjustFont(fontStyle: self.sectionTitleFontStyle)
                 Spacer()
             }
             VStack{
@@ -250,17 +269,21 @@ struct SubscriptionPriceView : View{
     let sectionPaddingTop = CGFloat(20)
     let sectionTitleBottomPadding = CGFloat(20)
     let smallDescriptionFontStyle = CustomFontStyle.sectionSmallDescriptionA
+    let smallDescriptionFontStyleBold = CustomFontStyle.sectionSmallDescriptionBold
     let sectionTitleFontStyle = CustomFontStyle.sectionTitle
     let sentenceFontStyle = CustomFontStyle.sectionDescription
+    let sentenceSmallPaddingToTop = CGFloat(10)
+    let sentenceBigPaddingToTop = CGFloat(20)
     @State var chosenHomeType : HomeGuideModel.HomeType?
     @ObservedObject var modelView: HomeModelView
     var body: some View{
         VStack{
             HStack{
                 Text("평형별 상세")
+                    .adjustFont(fontStyle: self.sectionTitleFontStyle)
                 Spacer()
             }
-            Grid(items: subscription.typeList!){ homeType in
+            Grid(items: subscription.typeList!,columnCount:4){ homeType in
                 Group{
                     if homeType == self.chosenHomeType{
                         Text("\(homeType.title)")
@@ -274,7 +297,7 @@ struct SubscriptionPriceView : View{
                     self.chosenHomeType = homeType
                 }
             }
-            .frame(minHeight: 100)
+            .frame(height: 100)
             .padding([.top],self.descriptionPaddingTop)
             Divider()
             Group{
@@ -293,8 +316,8 @@ struct SubscriptionPriceView : View{
                             .adjustFont(fontStyle:self.sectionTitleFontStyle)
                             .padding([.bottom], self.sectionTitleBottomPadding)
                             VStack{
-                                SmallRowView(header:"넓이(미터)" , value:String(chosenHomeType!.size.inMeter))
-                                SmallRowView(header:"넓이(평형", value: String(chosenHomeType!.size.inPy))
+                                SmallRowView(header:"넓이(미터)" , value:String(chosenHomeType!.size.inMeter) + " 제곱미터")
+                                SmallRowView(header:"넓이(평형", value: String(chosenHomeType!.size.inPy) + " 평")
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
                             
@@ -309,8 +332,8 @@ struct SubscriptionPriceView : View{
                             VStack{
                                 Group{
                                     if subscription.hasSpecialSupply{
-                                        SmallRowView(header:"특별공급" , value:String(chosenHomeType!.specialSupply!))
-                                        SmallRowView(header:"일반공급", value: String(chosenHomeType!.generalSupply!))
+                                        SmallRowView(header:"특별공급" , value:String(chosenHomeType!.specialSupply!) + " 세대")
+                                        SmallRowView(header:"일반공급", value: String(chosenHomeType!.generalSupply!) + " 세대")
                                     }
                                 }
                                 SmallRowView(header:"총 세대수", value:String(chosenHomeType!.totalSupply))
@@ -331,16 +354,16 @@ struct SubscriptionPriceView : View{
                                         row2: "중도금",
                                         row3: "잔금"
                                     )
-                                    Spacer()
+                                        .adjustFont(fontStyle: self.smallDescriptionFontStyleBold)
                                     DetailColumnView(
                                         isTailMerged: true,
                                         row1: chosenHomeType!.firstPrice.inText,
                                         row2: chosenHomeType!.middlePrice.inText,
                                         row3: chosenHomeType!.finalPrice.inText
                                     )
-                                    Spacer()
+//                                    Spacer()
                                     DetailColumnView(
-                                        isTailMerged: true,
+                                        isHeadMerged: true,
                                         row1: "초기 필요 자금",
                                         row1_1 : "(A)",
                                         row1_2 : "\(chosenHomeType!.needMoneyFirst)",
@@ -354,9 +377,11 @@ struct SubscriptionPriceView : View{
                                 HStack{
                                     VStack{
                                         HStack{
-                                            Text("청약시에 필요한 돈은 \(chosenHomeType!.needMoneyFirst)원이고,").adjustFont(fontStyle: self.sentenceFontStyle)
+                                            Text("청약시에 필요한 돈은")
+                                            Text("\(chosenHomeType!.needMoneyFirst)원").foregroundColor(Color.coralRed)
+                                            Text("이고")
                                             Spacer()
-                                        }
+                                        }.adjustFont(fontStyle: self.sentenceFontStyle)
                                         HStack{
                                             HStack{
                                                 Text("(A) 계약금 + 중도금")
@@ -366,20 +391,27 @@ struct SubscriptionPriceView : View{
                                                     }
                                                 }
                                             }
+                                            .padding([.top], self.sentenceSmallPaddingToTop)
                                             Spacer()
                                         }
                                         .foregroundColor(Color.lightGrey)
                                         HStack{
-                                            Text("총 필요한 금액은 \(chosenHomeType!.needMoneyFinal)원 입니다.")
-                                                .adjustFont(fontStyle: self.sentenceFontStyle)
+                                            Text("총 필요한 금액은")
+                                            
+                                                
+                                            Text("\(chosenHomeType!.needMoneyFinal)원").foregroundColor(Color.coralRed)
+                                            Text("입니다.")
                                             Spacer()
                                         }
+                                        .adjustFont(fontStyle: self.sentenceFontStyle)
+                                        .padding([.top], self.sentenceBigPaddingToTop)
                                         HStack{
                                             VStack(alignment: .leading){
                                                Text("(B) 잔금 - 대출 가능 금액")
                                                Text("대출 가능 금액은 무주택자 기준으로 개인에 따라 차이가 있습니다.")
                                            }
                                            .foregroundColor(Color.lightGrey)
+                                            .padding([.top], self.sentenceSmallPaddingToTop)
                                             Spacer()
                                         }
                                    }
@@ -502,84 +534,3 @@ struct SubscriptionLinkView: View{
         }.foregroundColor(Color.coralRed)
     }
 }
-struct Grid<Item, ItemView>: View where Item:Identifiable, ItemView : View{
-    private var items: [Item]
-    private var viewForItem: (Item)-> ItemView
-    // @escaping은 지금 들어온 함수가 지금 init에서 안 쓰이고, 나중에 쓰일 거에요. 라는 말임.
-    init(items: [Item], viewForItem: @escaping (Item)-> ItemView){
-        self.items = items
-        self.viewForItem = viewForItem
-    }
-    var body: some View {
-        GeometryReader {geometry in
-            self.body(for: GridLayout(itemCount: self.items.count, in: geometry.size))
-        }
-    }
-    private func body(for layout: GridLayout) -> some View{
-        ForEach(items){item in
-            self.body(for:item, in:layout)
-        }
-    }
-    private func body(for item: Item, in layout: GridLayout) -> some View{
-        let index = items.firstIndex(matching: item)
-                return viewForItem(item)
-                    .frame(width: layout.itemSize.width, height:layout.itemSize.height)
-                    .position(layout.location(ofItemAt:index!))
-    }
-}
-struct GridLayout {
-    private(set) var size: CGSize
-    private(set) var rowCount: Int = 0
-    private(set) var columnCount: Int = 0
-    
-    init(itemCount: Int, nearAspectRatio desiredAspectRatio: Double = 1, in size: CGSize) {
-        self.size = size
-        // if our size is zero width or height or the itemCount is not > 0
-        // then we have no work to do (because our rowCount & columnCount will be zero)
-        guard size.width != 0, size.height != 0, itemCount > 0 else { return }
-        // find the bestLayout
-        // i.e., one which results in cells whose aspectRatio
-        // has the smallestVariance from desiredAspectRatio
-        // not necessarily most optimal code to do this, but easy to follow (hopefully)
-//        var bestLayout: (rowCount: Int, columnCount: Int) = (1, itemCount)
-//        var smallestVariance: Double?
-//        let sizeAspectRatio = abs(Double(size.width/size.height))
-//        for rows in 1...itemCount {
-//            let columns = (itemCount / rows) + (itemCount % rows > 0 ? 1 : 0)
-//            if (rows - 1) * columns < itemCount {
-//                let itemAspectRatio = sizeAspectRatio * (Double(rows)/Double(columns))
-//                let variance = abs(itemAspectRatio - desiredAspectRatio)
-//                if smallestVariance == nil || variance < smallestVariance! {
-//                    smallestVariance = variance
-//                    bestLayout = (rowCount: rows, columnCount: columns)
-//                }
-//            }
-//        }
-        let columnPoint = 4
-        var bestLayout:(rowCount: Int, columnCount: Int) = (itemCount/columnPoint, columnPoint)
-        rowCount = bestLayout.rowCount
-        columnCount = bestLayout.columnCount
-    }
-    var itemSize: CGSize {
-        if rowCount == 0 || columnCount == 0 {
-            return CGSize.zero
-        } else {
-            return CGSize(
-                width: size.width / CGFloat(columnCount),
-                height: size.height / CGFloat(rowCount)
-            )
-        }
-    }
-    
-    func location(ofItemAt index: Int) -> CGPoint {
-        if rowCount == 0 || columnCount == 0 {
-            return CGPoint.zero
-        } else {
-            return CGPoint(
-                x: (CGFloat(index % columnCount) + 0.5) * itemSize.width,
-                y: (CGFloat(index / columnCount) + 0.5) * itemSize.height
-            )
-        }
-    }
-}
-

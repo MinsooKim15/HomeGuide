@@ -12,10 +12,10 @@ import SwiftUI
 struct FontModifier: AnimatableModifier{
     @Environment(\.sizeCategory) var sizeCategory
     var fontStyle: CustomFontStyle
-    let customFontRegular = "NanaumSquareOTFR"
-    let customFontLight = "NanaumSquareOTFL"
-    let customFontBold = "NanaumSquareOTFB"
-    let customFontExtraBold = "NanaumSquareOTFEB"
+    let customFontRegular = "NanumSquareOTFR"
+    let customFontLight = "NanumSquareOTFL"
+    let customFontBold = "NanumSquareOTFB"
+    let customFontExtraBold = "NanumSquareOTFEB"
     
     
     init(fontStyle:CustomFontStyle){
@@ -35,11 +35,11 @@ struct FontModifier: AnimatableModifier{
         case .sectionSmallDescriptionA:
             return Font.custom(self.customFontRegular, size:CGFloat(12))
         case .sectionSmallDescriptionB:
-            return Font.custom(self.customFontRegular, size:CGFloat(12))
+            return Font.custom(self.customFontBold, size:CGFloat(12))
         case .sectionDescription:
             return Font.custom(self.customFontRegular, size:CGFloat(16))
         case .sectionTitle:
-            return Font.custom(self.customFontExtraBold, size:CGFloat(18))
+            return Font.custom(self.customFontBold, size:CGFloat(18))
         case .headTitle:
             return Font.custom(self.customFontBold, size:CGFloat(24))
         case .headDescriptionA:
@@ -48,7 +48,10 @@ struct FontModifier: AnimatableModifier{
             return Font.custom(self.customFontRegular, size:CGFloat(16))
         case .mainHeadTitle:
             return Font.custom(self.customFontBold, size:CGFloat(28))
+        case .sectionSmallDescriptionBold:
+            return Font.custom(self.customFontBold, size:CGFloat(12))
         }
+        
     }
 
 }
@@ -76,5 +79,6 @@ enum CustomFontStyle{
     case headDescriptionA
     case headDescriptionB
     case mainHeadTitle
+    case sectionSmallDescriptionBold
 }
 

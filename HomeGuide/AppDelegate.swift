@@ -20,8 +20,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
       didFinishLaunchingWithOptions launchOptions:
         [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-      FirebaseApp.configure()
+        FirebaseApp.configure()
         let db = Firestore.firestore()
+        
+        // TODO : 임시 코드 삭제 필요
+        for familyName in UIFont.familyNames {
+            print("\n-- \(familyName) \n")
+            for fontName in UIFont.fontNames(forFamilyName: familyName) {
+                print(fontName)
+            }
+        }
       return true
     }
 

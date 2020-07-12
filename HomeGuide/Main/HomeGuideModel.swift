@@ -25,7 +25,6 @@ struct HomeGuideModel{
 
     
     struct FilterCategory: Identifiable{
-        
         var id : Int
         // It will be displayed
         var titleDisplay : String
@@ -35,6 +34,23 @@ struct HomeGuideModel{
         var optionList : Array<FilterOption>?
         var filterRange : FilterRange?
         var choosenFilterRange: FilterRange?
+        func isLastOption(_ selectedOption: HomeGuideModel.FilterOption) -> Bool{
+            if let optionList_ = optionList{
+                var choosenCount = 0
+                for option in optionList_{
+                    if (option.choosen)&&(option != selectedOption){
+                        choosenCount += 1
+                    }
+                }
+                if choosenCount == 0{
+                    return true
+                }else{
+                    return false
+                }
+            }else{
+                return false
+            }
+        }
         var isChoosen: Bool {
             var choosen = false
             if let tempOptionList = optionList{
@@ -47,22 +63,23 @@ struct HomeGuideModel{
             return choosen
         }
         var choosenOptionString:String{
+            var firstString = ""
             var choosenString = ""
             var choosenCounter = 0
             if isChoosen{
                 if let tempOptionList = optionList{
                     for option in tempOptionList{
                         if option.choosen{
-                            if choosenString == ""{
-                                choosenString = String(option.value)
+                            if choosenCounter == 0{
+                                firstString = String(option.value)
                                 choosenCounter = 1
                             }else{
-                                choosenString = choosenString + " 외 \(choosenCounter)"
                                 choosenCounter += 1
                             }
                         }
                     }
                 }
+                choosenString = firstString + " 외 \(choosenCounter - 1)"
                 return choosenString
             }else{
                 return self.titleDisplay
@@ -86,7 +103,7 @@ struct HomeGuideModel{
                 }
             }else{
                 dataType = .range
-                filterRange = FilterRange(array : (dictionary["optionRange"] as! Array<Double>))
+                filterRange = FilterRange(array : (dictionary["optionRange"] as! Array<Double>), interval : dictionary["optionInterval"] as! Double)
             
             }
             optionList = tempList
@@ -95,9 +112,12 @@ struct HomeGuideModel{
     struct FilterRange{
         var startData: Double
         var endData : Double
-        init(array: Array<Double>) {
+        var interval : Double
+        
+        init(array: Array<Double>, interval : Double) {
             startData = array[0]
             endData = array[1]
+            self.interval = interval
         }
     }
     enum DataStyle {
@@ -109,7 +129,7 @@ struct HomeGuideModel{
         var id: Int
         // It will be displayed and query
         var value : String
-        var choosen : Bool = false
+        var choosen : Bool = true
     }
     
     
@@ -171,6 +191,7 @@ struct HomeGuideModel{
         var startDate: Date?
         var endDate: Date?
         var dateLeftInString : String?
+        var dateClose : Date?
         var choosenHomeType: HomeType?
         var iconName: String {
             if (self.buildingType == "아파트") || (self.buildingType == "apt"){
@@ -231,7 +252,9 @@ struct HomeGuideModel{
             }
             lowestPrice = getLowestPrice()
             highestPrice = getHighestPrice()
-            dateLeftInString = getDateLeftString()
+            var closestDateTuple:(dateLeftString : String?, dateClose: Date?) = getDateLeftString()
+            dateLeftInString = closestDateTuple.dateLeftString
+            dateClose = closestDateTuple.dateClose
             startDate = getStartDate()
             endDate = getEndDate()
         }
@@ -304,29 +327,36 @@ struct HomeGuideModel{
             }
             
         }
-        func getDateLeftString() -> String?{
+        func getDateLeftString() -> (dateLeftString:String?, dateClose : Date?){
             // MARK : Nil error 주의
             var dateLeftString : String?
+            var dateCloseCandidate : Date?
             
             if self.notPassed(dateSpecialSupplyNear!){
                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                dateCloseCandidate = dateSpecialSupplyNear!
             }
             if self.notPassed(dateSpecialSupplyOther!){
                 dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                dateCloseCandidate = dateSpecialSupplyOther!
             }
             if self.notPassed(dateFirstNear!){
                 dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                dateCloseCandidate = dateFirstNear!
             }
             if self.notPassed(dateFirstOther!){
                 dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                dateCloseCandidate = dateSpecialSupplyOther!
             }
             if self.notPassed(dateSecondNear!){
                 dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                dateCloseCandidate = dateSecondNear!
             }
             if self.notPassed(dateSecondOther!){
                 dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                dateCloseCandidate = dateSecondOther!
             }
-            return dateLeftString
+            return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
         }
         func getDateLeftString(from targetDate:Date) -> String{
             let currentDate = Date()
@@ -349,8 +379,8 @@ struct HomeGuideModel{
             var resultString = ""
             // 같은 달 안 인가?
             
-            if (interval.day == 0)&&(dayDiff == 0){
-                resultString = "오늘"
+            if let intervalDay = interval.day,(intervalDay < 1)&&(dayDiff == 0){
+                resultString = "TODAY"
             }else if (targetMonth == currentMonth)&&(dayDiff < 7){
                 resultString = "D-\(dayDiff)"
             }else{
@@ -378,9 +408,30 @@ struct HomeGuideModel{
             return resultString
         }
         func notPassed(_ targetDate:Date)-> Bool{
+            let currentDate = Date()
+            let interval = targetDate - currentDate
+            
+            let cal = Calendar.current
+            
+            let currentMonth = cal.component(.month, from: currentDate)
+            let currentWeek = cal.component(.weekOfYear, from: currentDate)
+            let currentDay = cal.component(.day, from: currentDate)
+            
+            
+            let targetMonth = cal.component(.month, from: targetDate)
+            let targetWeek = cal.component(.weekOfYear, from : targetDate)
+            let targetDay = cal.component(.day, from: targetDate)
+            let dayDiff = targetDay - currentDay
+            let weekDiff = (targetWeek - currentWeek)
+            let monthDiff = (targetMonth - currentMonth)
+            
             if targetDate >= Date(){
                 return true
             }else{
+                // 당일일 수도 있음
+                if let intervalDay = interval.day,(intervalDay < 1)&&(dayDiff == 0){
+                    return true
+                }
                 return false
             }
         }

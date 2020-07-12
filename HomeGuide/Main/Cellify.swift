@@ -30,7 +30,7 @@ struct Cellify: AnimatableModifier{
                     Rectangle().fill().foregroundColor(color!)
                 }
             }
-            Rectangle().stroke().foregroundColor(Color.grey)
+            Rectangle().stroke().foregroundColor(Color.whiteGrey)
             content
         }
         

@@ -13,6 +13,7 @@ struct Burblify: AnimatableModifier{
     var isChoosen: Bool
     var choosenStrokeColor : Color
     var notChoosenStrokeColor : Color
+    var makeBlank : Bool = false
     var strokeColor : Color{
         if isChoosen{
             return choosenStrokeColor
@@ -25,25 +26,42 @@ struct Burblify: AnimatableModifier{
     let cornerRadius = CGFloat(30)
     let maxWidth = CGFloat(100)
     let minWidth = CGFloat(100)
-    let choosenLineWidth = CGFloat(1.6)
-    let notChoosenLineWidth = CGFloat(0.8)
+    var lineWidth: CGFloat{
+        if isChoosen{
+            return CGFloat(1.6)
+        }else{
+            return CGFloat(0.4)
+        }
+    }
+    var targetHeightRatio: CGFloat{
+        if makeBlank{
+            return CGFloat(0.7)
+        }else{
+            return CGFloat(1)
+        }
+    }
+    var targetWidthRatio : CGFloat{
+        if makeBlank{
+            return CGFloat(0.7)
+        }else{
+            return CGFloat(1)
+        }
+    }
     func body(content: Content) -> some View{
-        ZStack(){
-            Group{
-                if isChoosen{
-                    RoundedRectangle(cornerRadius:cornerRadius).stroke(strokeColor, lineWidth:self.choosenLineWidth)
-                }else{
-                    RoundedRectangle(cornerRadius:cornerRadius).stroke(strokeColor, lineWidth: self.notChoosenLineWidth)
-                }
+        GeometryReader{geometry in
+            ZStack{
+                RoundedRectangle(cornerRadius:self.cornerRadius)
+                    .stroke(self.strokeColor, lineWidth:self.lineWidth)
+                content.lineLimit(1).foregroundColor(self.strokeColor)
             }
-
-            content.lineLimit(1).foregroundColor(strokeColor)
-        }.frame(alignment:.center)
+            .frame(width: geometry.size.width * self.targetWidthRatio, height: geometry.size.height * self.targetHeightRatio)
+            .frame(alignment:.center)
+        }
  
     }
 }
 extension View{
-    func burblify(isChoosen:Bool, notChoosenStrokeColor: Color, choosenStrokeColor: Color) -> some View{
-        self.modifier(Burblify(isChoosen:isChoosen, choosenStrokeColor : choosenStrokeColor, notChoosenStrokeColor:notChoosenStrokeColor))
+    func burblify(isChoosen:Bool, notChoosenStrokeColor: Color, choosenStrokeColor: Color, makeBlank:Bool = false) -> some View{
+        self.modifier(Burblify(isChoosen:isChoosen, choosenStrokeColor : choosenStrokeColor, notChoosenStrokeColor:notChoosenStrokeColor,makeBlank:makeBlank))
     }
 }

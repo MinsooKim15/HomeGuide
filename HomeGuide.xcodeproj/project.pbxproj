@@ -7,12 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0204EA0324B04922001D8B6F /* AddAdevertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0224B04922001D8B6F /* AddAdevertisement.swift */; };
+		0204EA0524B84BD3001D8B6F /* FilterCellify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0424B84BD3001D8B6F /* FilterCellify.swift */; };
+		0204EA0824B86842001D8B6F /* MultiSlider+Drag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0724B86842001D8B6F /* MultiSlider+Drag.swift */; };
+		0204EA0A24B8688A001D8B6F /* MultiSlider+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0924B8688A001D8B6F /* MultiSlider+Internal.swift */; };
+		0204EA0C24B868A8001D8B6F /* MultiSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0B24B868A8001D8B6F /* MultiSlider.swift */; };
+		0204EA0E24B868C8001D8B6F /* MultiSliderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */; };
+		0204EA1024B868E6001D8B6F /* MultiValueSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */; };
 		02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */; };
 		02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1A24AA3B21008E7BF4 /* Cardify.swift */; };
 		02B20A1D24AADF26008E7BF4 /* AdjustFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */; };
 		02B20A1F24AAE659008E7BF4 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */; };
 		02B20A2124AB06FE008E7BF4 /* Pickify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2024AB06FE008E7BF4 /* Pickify.swift */; };
 		02B20A2324AB1D83008E7BF4 /* Cellify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2224AB1D83008E7BF4 /* Cellify.swift */; };
+		02B20A2524AB364B008E7BF4 /* GADBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2424AB364B008E7BF4 /* GADBannerViewController.swift */; };
+		02B20A2724AC96CF008E7BF4 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2624AC96CF008E7BF4 /* Grid.swift */; };
 		02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882224A4EF3200237AB3 /* HomeModelView.swift */; };
 		02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882424A4F43700237AB3 /* HomeGuideModel.swift */; };
 		02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */; };
@@ -38,12 +47,21 @@
 
 /* Begin PBXFileReference section */
 		0103E5853D7920A0D01959F2 /* Pods_HomeGuide.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeGuide.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0204EA0224B04922001D8B6F /* AddAdevertisement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAdevertisement.swift; sourceTree = "<group>"; };
+		0204EA0424B84BD3001D8B6F /* FilterCellify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCellify.swift; sourceTree = "<group>"; };
+		0204EA0724B86842001D8B6F /* MultiSlider+Drag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MultiSlider+Drag.swift"; sourceTree = "<group>"; };
+		0204EA0924B8688A001D8B6F /* MultiSlider+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MultiSlider+Internal.swift"; sourceTree = "<group>"; };
+		0204EA0B24B868A8001D8B6F /* MultiSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSlider.swift; sourceTree = "<group>"; };
+		0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderExtensions.swift; sourceTree = "<group>"; };
+		0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiValueSlider.swift; sourceTree = "<group>"; };
 		02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Subtract.swift"; sourceTree = "<group>"; };
 		02B20A1A24AA3B21008E7BF4 /* Cardify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cardify.swift; sourceTree = "<group>"; };
 		02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustFont.swift; sourceTree = "<group>"; };
 		02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
 		02B20A2024AB06FE008E7BF4 /* Pickify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pickify.swift; sourceTree = "<group>"; };
 		02B20A2224AB1D83008E7BF4 /* Cellify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cellify.swift; sourceTree = "<group>"; };
+		02B20A2424AB364B008E7BF4 /* GADBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GADBannerViewController.swift; sourceTree = "<group>"; };
+		02B20A2624AC96CF008E7BF4 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		02E5882224A4EF3200237AB3 /* HomeModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModelView.swift; sourceTree = "<group>"; };
 		02E5882424A4F43700237AB3 /* HomeGuideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideModel.swift; sourceTree = "<group>"; };
 		02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailView.swift; sourceTree = "<group>"; };
@@ -82,11 +100,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0204EA0624B86831001D8B6F /* MultiSlider */ = {
+			isa = PBXGroup;
+			children = (
+				0204EA0724B86842001D8B6F /* MultiSlider+Drag.swift */,
+				0204EA0924B8688A001D8B6F /* MultiSlider+Internal.swift */,
+				0204EA0B24B868A8001D8B6F /* MultiSlider.swift */,
+				0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */,
+				0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */,
+			);
+			path = MultiSlider;
+			sourceTree = "<group>";
+		};
 		02E5882A24A825EF00237AB3 /* Main */ = {
 			isa = PBXGroup;
 			children = (
 				02E5882424A4F43700237AB3 /* HomeGuideModel.swift */,
 				02F8DADB24A4E5D70066D114 /* MainView.swift */,
+				0204EA0224B04922001D8B6F /* AddAdevertisement.swift */,
 				02E5884224A9BC4500237AB3 /* Burblify.swift */,
 				02B20A1A24AA3B21008E7BF4 /* Cardify.swift */,
 				02E5882224A4EF3200237AB3 /* HomeModelView.swift */,
@@ -94,6 +125,7 @@
 				02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */,
 				02B20A2024AB06FE008E7BF4 /* Pickify.swift */,
 				02B20A2224AB1D83008E7BF4 /* Cellify.swift */,
+				0204EA0424B84BD3001D8B6F /* FilterCellify.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -112,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */,
+				02B20A2624AC96CF008E7BF4 /* Grid.swift */,
 			);
 			path = SubscriptionDetail;
 			sourceTree = "<group>";
@@ -130,6 +163,7 @@
 		02F8DACB24A4E5D70066D114 = {
 			isa = PBXGroup;
 			children = (
+				0204EA0624B86831001D8B6F /* MultiSlider */,
 				02F8DAD624A4E5D70066D114 /* HomeGuide */,
 				02F8DAD524A4E5D70066D114 /* Products */,
 				6035D483E3ADC9E4DD39E8D2 /* Pods */,
@@ -161,6 +195,7 @@
 				02F8DADD24A4E5D90066D114 /* Assets.xcassets */,
 				02F8DAE224A4E5D90066D114 /* LaunchScreen.storyboard */,
 				02F8DAE524A4E5D90066D114 /* Info.plist */,
+				02B20A2424AB364B008E7BF4 /* GADBannerViewController.swift */,
 				02F8DADF24A4E5D90066D114 /* Preview Content */,
 			);
 			path = HomeGuide;
@@ -313,19 +348,28 @@
 			files = (
 				02B20A2324AB1D83008E7BF4 /* Cellify.swift in Sources */,
 				02E5882F24A8265A00237AB3 /* SettingModelView.swift in Sources */,
+				0204EA0E24B868C8001D8B6F /* MultiSliderExtensions.swift in Sources */,
 				02E5883124A8266A00237AB3 /* SettingView.swift in Sources */,
+				0204EA0A24B8688A001D8B6F /* MultiSlider+Internal.swift in Sources */,
+				02B20A2724AC96CF008E7BF4 /* Grid.swift in Sources */,
 				02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */,
 				02B20A1D24AADF26008E7BF4 /* AdjustFont.swift in Sources */,
+				0204EA0824B86842001D8B6F /* MultiSlider+Drag.swift in Sources */,
 				02F8DAD824A4E5D70066D114 /* AppDelegate.swift in Sources */,
 				02F8DADA24A4E5D70066D114 /* SceneDelegate.swift in Sources */,
 				02E5884524A9D58D00237AB3 /* Color+Hex.swift in Sources */,
 				02B20A1F24AAE659008E7BF4 /* Color+Extension.swift in Sources */,
+				0204EA0C24B868A8001D8B6F /* MultiSlider.swift in Sources */,
+				0204EA0324B04922001D8B6F /* AddAdevertisement.swift in Sources */,
 				02F8DADC24A4E5D70066D114 /* MainView.swift in Sources */,
 				02E5882D24A8264C00237AB3 /* SettingModel.swift in Sources */,
 				02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */,
 				02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */,
+				02B20A2524AB364B008E7BF4 /* GADBannerViewController.swift in Sources */,
+				0204EA0524B84BD3001D8B6F /* FilterCellify.swift in Sources */,
 				02B20A2124AB06FE008E7BF4 /* Pickify.swift in Sources */,
 				02E5882924A794B700237AB3 /* Array+Identifiable.swift in Sources */,
+				0204EA1024B868E6001D8B6F /* MultiValueSlider.swift in Sources */,
 				02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */,
 				02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */,
 				02E5884324A9BC4500237AB3 /* Burblify.swift in Sources */,
