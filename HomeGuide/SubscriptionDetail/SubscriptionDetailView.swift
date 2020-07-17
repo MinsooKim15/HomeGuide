@@ -290,7 +290,7 @@ struct SubscriptionPriceView : View{
             }
             Grid(items: subscription.typeList!,columnCount:4){ homeType in
                 Group{
-                    if homeType == self.chosenHomeType{
+                    if homeType == self.subscription.chosenHomeType{
                         Text("\(homeType.title)")
                         .pickify(isChoosen:true)
                     }else{
@@ -299,17 +299,17 @@ struct SubscriptionPriceView : View{
                     }
                 }
                 .onTapGesture{
-                    self.chosenHomeType = homeType
+                    self.modelView.chooseHomeType(subscription: self.subscription, homeType: homeType)
                 }
             }
             .frame(height: 100)
             .padding([.top],self.descriptionPaddingTop)
             Divider()
             Group{
-                if self.chosenHomeType != nil{
+                if self.subscription.chosenHomeType != nil{
                     VStack{
                         HStack{
-                            Text(self.chosenHomeType!.title+"형")
+                            Text(self.subscription.chosenHomeType!.title+"형")
                             Spacer()
                         }
                         //상세 정보
@@ -321,8 +321,8 @@ struct SubscriptionPriceView : View{
                             .adjustFont(fontStyle:self.sectionTitleFontStyle)
                             .padding([.bottom], self.sectionTitleBottomPadding)
                             VStack{
-                                SmallRowView(header:"넓이(미터)" , value:String(chosenHomeType!.size.inMeter) + " m²")
-                                SmallRowView(header:"넓이(평형", value: String(chosenHomeType!.size.inPy) + " 평")
+                                SmallRowView(header:"넓이(미터)" , value:String(self.subscription.chosenHomeType!.size.inMeter) + " m²")
+                                SmallRowView(header:"넓이(평형", value: String(self.subscription.chosenHomeType!.size.inPy) + " 평")
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
                             
@@ -337,11 +337,11 @@ struct SubscriptionPriceView : View{
                             VStack{
                                 Group{
                                     if subscription.hasSpecialSupply{
-                                        SmallRowView(header:"특별공급" , value:String(chosenHomeType!.specialSupply!) + " 세대")
-                                        SmallRowView(header:"일반공급", value: String(chosenHomeType!.generalSupply!) + " 세대")
+                                        SmallRowView(header:"특별공급" , value:String(self.subscription.chosenHomeType!.specialSupply!) + " 세대")
+                                        SmallRowView(header:"일반공급", value: String(self.subscription.chosenHomeType!.generalSupply!) + " 세대")
                                     }
                                 }
-                                SmallRowView(header:"총 세대수", value:String(chosenHomeType!.totalSupply) + " 세대")
+                                SmallRowView(header:"총 세대수", value:String(self.subscription.chosenHomeType!.totalSupply) + " 세대")
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
                         }.padding([.top], self.sectionPaddingTop)
@@ -363,28 +363,28 @@ struct SubscriptionPriceView : View{
                                             .adjustFont(fontStyle: self.smallDescriptionFontStyleBold)
                                         DetailColumnView(
                                             isTailMerged: true,
-                                            row1: chosenHomeType!.firstPrice.inText,
-                                            row2: chosenHomeType!.middlePrice.inText,
-                                            row3: chosenHomeType!.finalPrice.inText
+                                            row1: self.subscription.chosenHomeType!.firstPrice.inText,
+                                            row2: self.subscription.chosenHomeType!.middlePrice.inText,
+                                            row3: self.subscription.chosenHomeType!.finalPrice.inText
                                         )
     //                                    Spacer()
                                         DetailColumnView(
                                             isHeadMerged: true,
                                             row1: "초기 필요 자금",
                                             row1_1 : "(A)",
-                                            row1_2 : "\(chosenHomeType!.needMoneyFirst)",
+                                            row1_2 : "\(self.subscription.chosenHomeType!.needMoneyFirst)",
                                             row2: "입주시 필요 자금",
                                             row2_1 : "(B)",
-                                            row2_2 : "\(chosenHomeType!.needMoneyFinal)",
+                                            row2_2 : "\(self.subscription.chosenHomeType!.needMoneyFinal)",
                                             row3: "대출 가능 금액",
-                                            row3_2 : "\(chosenHomeType!.loanLimit.inText)"
+                                            row3_2 : "\(self.subscription.chosenHomeType!.loanLimit.inText)"
                                         )
                                     }.frame(minHeight: 240)
                                     HStack{
                                         VStack{
                                             HStack{
                                                 Text("청약시에 필요한 돈은")
-                                                Text("\(chosenHomeType!.needMoneyFirst)").foregroundColor(Color.coralRed)
+                                                Text("\(self.subscription.chosenHomeType!.needMoneyFirst)").foregroundColor(Color.coralRed)
                                                 Text("이고")
                                                 Spacer()
                                             }.adjustFont(fontStyle: self.sentenceFontStyle)
@@ -396,7 +396,7 @@ struct SubscriptionPriceView : View{
                                                     }
 
                                                     Group{
-                                                        if chosenHomeType!.middlePriceLoanable{
+                                                        if self.subscription.chosenHomeType!.middlePriceLoanable{
                                                             HStack{
                                                             Text("중도금 대출 가능 여부에 따라 달라질 수 있습니다.")
                                                                 Spacer()
@@ -413,7 +413,7 @@ struct SubscriptionPriceView : View{
                                                 Text("입주 시점에는")
                                                 
                                                     
-                                                Text("\(chosenHomeType!.needMoneyFinal)").foregroundColor(Color.coralRed)
+                                                Text("\(self.subscription.chosenHomeType!.needMoneyFinal)").foregroundColor(Color.coralRed)
                                                 Text("이 더 필요해요.")
                                                 Spacer()
                                             }

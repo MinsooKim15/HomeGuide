@@ -160,7 +160,7 @@ struct HomeGuideModel{
     mutating func chooseHomeType(subscription:Subscription, homeType:HomeType){
         if let chosenIndex:Int = self.subscriptions.firstIndex(matching: subscription){
             if let choosenHomeTypeIndex = self.subscriptions[chosenIndex].typeList?.firstIndex(matching: homeType){
-                self.subscriptions[chosenIndex].choosenHomeType = self.subscriptions[chosenIndex].typeList![choosenHomeTypeIndex]
+                self.subscriptions[chosenIndex].chosenHomeType = self.subscriptions[chosenIndex].typeList![choosenHomeTypeIndex]
             }
         }
     }
@@ -197,7 +197,7 @@ struct HomeGuideModel{
         var endDate: Date?
         var dateLeftInString : String?
         var dateClose : Date?
-        var choosenHomeType: HomeType?
+        var chosenHomeType: HomeType?
         var iconName: String {
             if (self.buildingType == "아파트") || (self.buildingType == "apt"){
                 let number = Int.random(in: 1..<4)
@@ -222,7 +222,6 @@ struct HomeGuideModel{
         init(snapshot: QueryDocumentSnapshot) {
             id = snapshot.documentID
             let snapshotValue = snapshot.data()
-            print(snapshotValue)
             title = (snapshotValue["title"] as! String)
             address = Address(
                 provinceCode : (snapshotValue["addressProvinceCode"] as? String) ?? "seoul",
@@ -257,6 +256,12 @@ struct HomeGuideModel{
                     let homeType = HomeType(
                         idNum: index, dictionary: element as! Dictionary<String,Any>)
                     typeList?.append(homeType)
+                }
+            }
+            // 첫번째 것을 선택해둔다.
+            if typeList != nil{
+                if typeList!.count > 0{
+                    chosenHomeType = typeList?[0]
                 }
             }
             lowestPrice = getLowestPrice()
@@ -355,25 +360,21 @@ struct HomeGuideModel{
                 }
             }
             if let _ = dateFirstNear, self.notPassed(dateFirstNear!){
-                print("제일 가까운 날임, 1순위 해당 지역", dateFirstNear!)
                 dateLeftString = getDateLeftString(from: dateFirstNear!)
                 dateCloseCandidate = dateFirstNear!
                 return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
             if let _ = dateFirstOther,  self.notPassed(dateFirstOther!){
-                print("제일 가까운 날임, 1순위 기타 지역", dateFirstOther!)
                 dateLeftString = getDateLeftString(from: dateFirstOther!)
                 dateCloseCandidate = dateFirstOther!
                 return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
             if let _ = dateSecondNear, self.notPassed(dateSecondNear!){
-                print("제일 가까운 날임, 2순위 해당 지역", dateSecondNear!)
                 dateLeftString = getDateLeftString(from: dateSecondNear!)
                 dateCloseCandidate = dateSecondNear!
                 return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
             if let _ = dateSecondOther, self.notPassed(dateSecondOther!){
-                print("제일 가까운 날임, 2순위 기타 지역", dateSecondOther!)
                 dateLeftString = getDateLeftString(from: dateSecondOther!)
                 dateCloseCandidate = dateSecondOther!
                 return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
@@ -436,45 +437,13 @@ struct HomeGuideModel{
         }
         func notPassed(_ targetDate:Date)-> Bool{
             let currentDate = Date()
-            print("오늘의 날짜는")
-            print(currentDate)
-            print("타겟 날짜는")
-            print(targetDate)
-            print("둘의 인터벌은")
-        
-            let interval = targetDate - currentDate
-            print(interval)
-            let cal = Calendar.current
-            
-            let currentMonth = cal.component(.month, from: currentDate)
-            let currentWeek = cal.component(.weekOfYear, from: currentDate)
-            let currentDay = cal.component(.day, from: currentDate)
-            
-            
-            let targetMonth = cal.component(.month, from: targetDate)
-            let targetWeek = cal.component(.weekOfYear, from : targetDate)
-            let targetDay = cal.component(.day, from: targetDate)
-            let dayDiff = targetDay - currentDay
-            let weekDiff = (targetWeek - currentWeek)
-            _ = (targetMonth - currentMonth)
-            
-            print("dayDiff")
-            print(dayDiff)
-            print("intervalDay")
-            print(interval.day!)
             if targetDate >= currentDate{
-                print("아직 안 지나감")
                 return true
             }else{
 //                 당일일 수도 있음
                 if isSameDay(date1: targetDate, date2: currentDate){
-                    print("같은 날임")
                     return true
                 }
-//                if (weekDiff < 1)&&(dayDiff == 0){
-//                    return true
-//                }
-                print("지나감")
                 return false
             }
         }
@@ -521,7 +490,7 @@ struct HomeGuideModel{
     
     struct HomeType : Identifiable ,Equatable{
         static func == (lhs: HomeGuideModel.HomeType, rhs: HomeGuideModel.HomeType) -> Bool {
-            return lhs.id == rhs.id
+            return lhs.title == rhs.title
         }
         
         var id : String
