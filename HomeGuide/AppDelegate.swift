@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       didFinishLaunchingWithOptions launchOptions:
         [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        let db = Firestore.firestore()
+        _ = Firestore.firestore()
         
         // TODO : 임시 코드 삭제 필요
         for familyName in UIFont.familyNames {

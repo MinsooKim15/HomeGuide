@@ -26,8 +26,20 @@ class HomeModelView:ObservableObject{
                 "titleDisplay": "분양 형태",
                 "titleQuery" : "subscriptionType",
                 "type" : "discrete",
-                "optionList" : ["공공", "민영", "공공 임대"]
-        ],
+                "optionList" : ["공공", "민영"]
+            ],
+            [
+                "titleDisplay": "지역",
+                "titleQuery" : "addressProvinceKor",
+                "type" : "discrete",
+                "optionList" : ["서울특별시", "경기도", "인천광역시","부산광역시","대구광역시", "경상남도", "경상북도", "충청북도","충청남도","대전광역시", "광주광역시","전라남도","전라북도","강원도","세종특별자치시","제주특별자치도"]
+            ],
+            [
+                "titleDisplay": "분양/임대",
+                "titleQuery" : "supplyType",
+                "type" : "discrete",
+                "optionList" : ["분양주택", "분양전환 가능임대", "분양전환 불가임대"]
+            ],
             [
                 "titleDisplay" : "건물",
                 "titleQuery" : "buildingType",
@@ -56,7 +68,7 @@ class HomeModelView:ObservableObject{
 
     func getData(){
         let db = Firestore.firestore()
-        db.collection("subscriptions").getDocuments{(querySnapshot, err) in
+        db.collection("subscriptions").whereField("dateSecondOther", isGreaterThan: Date()).getDocuments{(querySnapshot, err) in
             if let err = err{
                 print("에러!: \(err)")
             }else{

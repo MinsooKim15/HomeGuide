@@ -1,0 +1,11 @@
+//
+//  Release.xcconfig
+//  HomeGuide
+//
+//  Created by minsoo kim on 2020/07/14.
+//  Copyright © 2020 minsoo kim. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+BANNER_ID = ca-app-pub-7040757797905985/3904242025

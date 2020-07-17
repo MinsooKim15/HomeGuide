@@ -149,6 +149,7 @@ struct HomeGuideModel{
         for snapshot in snapshots{
             subscriptions.append(Subscription(snapshot: snapshot))
         }
+        subscriptions = subscriptions.sorted(by: {$0.dateClose! < $1.dateClose!})
     }
     mutating func snapshotsToGuides(snapshots:[QueryDocumentSnapshot]){
         for snapshot in snapshots{
@@ -170,6 +171,7 @@ struct HomeGuideModel{
         var title : String
         var address : Address
         var buildingType : String
+        var supplyType : String
         var subscriptionType : String
         var noRank : Bool
         var noRankDate : Date?
@@ -181,6 +183,9 @@ struct HomeGuideModel{
         var dateSecondNear : Date?
         var dateSecondOther: Date?
         var dateNotice : Date?
+        var dateAnnounce : Date?
+        var dateContract : Date?
+        var priceDidSet : Bool
         var zoneType: Int
         var officialLink : String?
         var naverLink : String?
@@ -225,7 +230,8 @@ struct HomeGuideModel{
                 detailFirst: (snapshotValue["addressDetailFirstKor"] as? String),
                 detailSecond: (snapshotValue["addressDetailSecondKor"] as? String)
             )
-            buildingType = (snapshotValue["buildingType"] as? String) ?? "apart"
+            supplyType = (snapshotValue["supplyType"] as? String) ?? "분양"
+            buildingType = (snapshotValue["buildingType"] as? String) ?? "아파트"
             subscriptionType = (snapshotValue["subscriptionType"] as? String) ?? ""
             noRank = (snapshotValue["noRank"] as? Bool) ?? false
             noRankDate = (snapshotValue["noRankDate"] as? Timestamp)?.dateValue()
@@ -237,10 +243,13 @@ struct HomeGuideModel{
             dateSecondNear = (snapshotValue["dateSecondNear"] as? Timestamp)?.dateValue()
             dateSecondOther = (snapshotValue["dateSecondOther"] as? Timestamp)?.dateValue()
             dateNotice = (snapshotValue["dateNotice"] as? Timestamp)?.dateValue()
+            dateAnnounce = (snapshotValue["dateAnnounce"] as? Timestamp)?.dateValue()
+            dateContract = (snapshotValue["dateContract"] as? Timestamp)?.dateValue()
             zoneType = (snapshotValue["zoneType"] as? Int) ?? 1
             officialLink = (snapshotValue["officialLink"] as? String)
             naverLink = (snapshotValue["naverLink"] as? String)
             documentLink = (snapshotValue["documentLink"] as? String)
+            priceDidSet = (snapshotValue["priceDidSet"] as! Bool)
             typeList = [HomeType]()
             if let tempTypeList = snapshotValue["typeList"]{
                 for (index, element) in (tempTypeList as? Array<Any>)!.enumerated(){
@@ -252,11 +261,12 @@ struct HomeGuideModel{
             }
             lowestPrice = getLowestPrice()
             highestPrice = getHighestPrice()
-            var closestDateTuple:(dateLeftString : String?, dateClose: Date?) = getDateLeftString()
+
+            let closestDateTuple:(dateLeftString : String?, dateClose: Date?) = getDateLeftString()
             dateLeftInString = closestDateTuple.dateLeftString
             dateClose = closestDateTuple.dateClose
-            startDate = getStartDate()
-            endDate = getEndDate()
+//            startDate = getStartDate()
+//            endDate = getEndDate()
         }
         
         func getEndDate()-> Date{
@@ -289,7 +299,7 @@ struct HomeGuideModel{
                 return self.dateSecondOther!
             }
         }
-        func getHighestPrice()-> Price?{
+        func getLowestPrice()-> Price?{
             if let tempTypeList = self.typeList {
                 var candidateHighPrice: Price? = nil
                 for homeType in tempTypeList{
@@ -308,7 +318,7 @@ struct HomeGuideModel{
         }
         
         
-        func getLowestPrice()-> Price?{
+        func getHighestPrice()-> Price?{
             if let tempTypeList = self.typeList {
                 var candidateLowPrice: Price? = nil
                 
@@ -332,31 +342,43 @@ struct HomeGuideModel{
             var dateLeftString : String?
             var dateCloseCandidate : Date?
             
-            if self.notPassed(dateSpecialSupplyNear!){
-               dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
-                dateCloseCandidate = dateSpecialSupplyNear!
+            if self.hasSpecialSupply{
+                if self.notPassed(dateSpecialSupplyNear!){
+                   dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                    dateCloseCandidate = dateSpecialSupplyNear!
+                    return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                }
+                if self.notPassed(dateSpecialSupplyOther!){
+                    dateLeftString = getDateLeftString(from: dateSpecialSupplyOther!)
+                    dateCloseCandidate = dateSpecialSupplyOther!
+                    return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                }
             }
-            if self.notPassed(dateSpecialSupplyOther!){
-                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
-                dateCloseCandidate = dateSpecialSupplyOther!
-            }
-            if self.notPassed(dateFirstNear!){
-                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            if let _ = dateFirstNear, self.notPassed(dateFirstNear!){
+                print("제일 가까운 날임, 1순위 해당 지역", dateFirstNear!)
+                dateLeftString = getDateLeftString(from: dateFirstNear!)
                 dateCloseCandidate = dateFirstNear!
+                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
-            if self.notPassed(dateFirstOther!){
-                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
-                dateCloseCandidate = dateSpecialSupplyOther!
+            if let _ = dateFirstOther,  self.notPassed(dateFirstOther!){
+                print("제일 가까운 날임, 1순위 기타 지역", dateFirstOther!)
+                dateLeftString = getDateLeftString(from: dateFirstOther!)
+                dateCloseCandidate = dateFirstOther!
+                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
-            if self.notPassed(dateSecondNear!){
-                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            if let _ = dateSecondNear, self.notPassed(dateSecondNear!){
+                print("제일 가까운 날임, 2순위 해당 지역", dateSecondNear!)
+                dateLeftString = getDateLeftString(from: dateSecondNear!)
                 dateCloseCandidate = dateSecondNear!
+                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
-            if self.notPassed(dateSecondOther!){
-                dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+            if let _ = dateSecondOther, self.notPassed(dateSecondOther!){
+                print("제일 가까운 날임, 2순위 기타 지역", dateSecondOther!)
+                dateLeftString = getDateLeftString(from: dateSecondOther!)
                 dateCloseCandidate = dateSecondOther!
+                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
             }
-            return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+           return (dateLeftString:"", dateClose : dateSecondOther!)
         }
         func getDateLeftString(from targetDate:Date) -> String{
             let currentDate = Date()
@@ -373,8 +395,8 @@ struct HomeGuideModel{
             let targetWeek = cal.component(.weekOfYear, from : targetDate)
             let targetDay = cal.component(.day, from: targetDate)
             let dayDiff = targetDay - currentDay
-            let weekDiff = (targetWeek - currentWeek)
-            let monthDiff = (targetMonth - currentMonth)
+            _ = (targetWeek - currentWeek)
+            _ = (targetMonth - currentMonth)
             
             var resultString = ""
             // 같은 달 안 인가?
@@ -386,10 +408,7 @@ struct HomeGuideModel{
             }else{
                 resultString = "\(targetMonth)/\(targetDay)"
             }
-//
-//
-//
-//
+
 //            var string = ""
 //            if targetWeek > currentWeek{
 //                if ((weekDiff <= 4) || (monthDiff == 0)){
@@ -407,10 +426,24 @@ struct HomeGuideModel{
 //            }
             return resultString
         }
+        func isSameDay(date1: Date, date2: Date) -> Bool {
+            let diff = Calendar.current.dateComponents([.day], from: date1, to: date2)
+            if diff.day == 0 {
+                return true
+            } else {
+                return false
+            }
+        }
         func notPassed(_ targetDate:Date)-> Bool{
             let currentDate = Date()
+            print("오늘의 날짜는")
+            print(currentDate)
+            print("타겟 날짜는")
+            print(targetDate)
+            print("둘의 인터벌은")
+        
             let interval = targetDate - currentDate
-            
+            print(interval)
             let cal = Calendar.current
             
             let currentMonth = cal.component(.month, from: currentDate)
@@ -423,15 +456,25 @@ struct HomeGuideModel{
             let targetDay = cal.component(.day, from: targetDate)
             let dayDiff = targetDay - currentDay
             let weekDiff = (targetWeek - currentWeek)
-            let monthDiff = (targetMonth - currentMonth)
+            _ = (targetMonth - currentMonth)
             
-            if targetDate >= Date(){
+            print("dayDiff")
+            print(dayDiff)
+            print("intervalDay")
+            print(interval.day!)
+            if targetDate >= currentDate{
+                print("아직 안 지나감")
                 return true
             }else{
-                // 당일일 수도 있음
-                if let intervalDay = interval.day,(intervalDay < 1)&&(dayDiff == 0){
+//                 당일일 수도 있음
+                if isSameDay(date1: targetDate, date2: currentDate){
+                    print("같은 날임")
                     return true
                 }
+//                if (weekDiff < 1)&&(dayDiff == 0){
+//                    return true
+//                }
+                print("지나감")
                 return false
             }
         }
@@ -491,9 +534,9 @@ struct HomeGuideModel{
         var middlePrice : Price
         var finalPrice : Price
         var middlePriceLoanable : Bool
-        var needMoneyFirst : Int
-        var needMoneyFinal : Int
-        var loanLimit : Int
+        var needMoneyFirst : String
+        var needMoneyFinal : String
+        var loanLimit : Price
         var size : Size
         var isChoosen:Bool = false
         init(idNum : Int, dictionary: Dictionary<String, Any>){
@@ -507,10 +550,9 @@ struct HomeGuideModel{
             middlePrice = Price(inText: (dictionary["middlePriceText"] as? String) ?? "0원", inNumeric: (dictionary["middlePriceNumeric"] as? Int) ?? 0)
             finalPrice = Price(inText: (dictionary["finalPriceText"] as? String) ?? "0원", inNumeric: (dictionary["finalPriceNumeric"] as? Int) ?? 0)
             middlePriceLoanable = (dictionary["middlePriceLoanable"] as? Bool) ?? false
-            needMoneyFirst = (dictionary["needMoneyFirst"] as? Int) ?? 0
-            needMoneyFinal = (dictionary["needMoneyFinal"] as? Int) ?? 0
-            loanLimit = (dictionary["loanLimit"] as? Int) ?? 0
-            
+            needMoneyFirst = (dictionary["needMoneyFirst"] as? String) ?? "0원"
+            needMoneyFinal = (dictionary["needMoneyFinal"] as? String) ?? "0원"
+            loanLimit = Price(inText: (dictionary["loanLimitText"] as? String) ?? "0원", inNumeric: (dictionary["loanLimitNumeric"] as? Int) ?? 0)
             size = Size(inMeter: (dictionary["sizeInMeter"] as? NSNumber)?.floatValue ?? 0, inPy: (dictionary["sizeInPy"] as? NSNumber)?.floatValue ?? 0)
         }
     }

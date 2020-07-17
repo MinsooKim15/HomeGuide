@@ -33,7 +33,9 @@ struct SubscriptionDetailView : View{
             List{
                 SubscriptionHeadView(subscription : subscription).cardify(.head)
                 SubscriptionSummaryView(subscription: subscription).cardify()
-                SubscriptionScheduleView(subscription : subscription).cardify()
+                if subscription.dateNotice != nil{
+                    SubscriptionScheduleView(subscription : subscription).cardify()
+                }
                 SubscriptionPriceView(subscription : subscription, modelView: self.modelView).cardify()
                 if subscription.naverLink != nil{
                     SubscriptionLinkView(title: "네이버에서 보기", link : subscription.naverLink!).cardify(.small)
@@ -133,7 +135,7 @@ struct SubscriptionSummaryView: View{
                             .padding([.bottom], self.paddingBetweenRow)
                         }
                     }
-                    SmallRowView(header:"분양세대", value:"\(subscription.totalSupply)" )
+                    SmallRowView(header:"분양세대", value:"\(subscription.totalSupply)" + " 세대" )
                 }
             }
             .adjustFont(fontStyle:self.descriptionFontStyle)
@@ -196,9 +198,12 @@ struct SubscriptionScheduleView: View{
                                 rowValue2:subscription.dateSecondOther!.getString()
                 )
                 Divider()
-                ScheduleRowView(isBig:true, rowTitle:"당첨자 발표일",
-                                rowValue1:subscription.dateNotice!.getString()
-                )
+                if subscription.dateAnnounce != nil{
+                    ScheduleRowView(isBig:true, rowTitle:"당첨자 발표일",
+                                    rowValue1:subscription.dateAnnounce!.getString()
+                    )
+
+                }
             }
             .padding([.top],self.descriptionPaddingTop)
         }
@@ -316,7 +321,7 @@ struct SubscriptionPriceView : View{
                             .adjustFont(fontStyle:self.sectionTitleFontStyle)
                             .padding([.bottom], self.sectionTitleBottomPadding)
                             VStack{
-                                SmallRowView(header:"넓이(미터)" , value:String(chosenHomeType!.size.inMeter) + " 제곱미터")
+                                SmallRowView(header:"넓이(미터)" , value:String(chosenHomeType!.size.inMeter) + " m²")
                                 SmallRowView(header:"넓이(평형", value: String(chosenHomeType!.size.inPy) + " 평")
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
@@ -336,91 +341,102 @@ struct SubscriptionPriceView : View{
                                         SmallRowView(header:"일반공급", value: String(chosenHomeType!.generalSupply!) + " 세대")
                                     }
                                 }
-                                SmallRowView(header:"총 세대수", value:String(chosenHomeType!.totalSupply))
+                                SmallRowView(header:"총 세대수", value:String(chosenHomeType!.totalSupply) + " 세대")
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
                         }.padding([.top], self.sectionPaddingTop)
-                        VStack{
-                            HStack{
-                                Text("가격")
-                                Spacer()
-                            }.adjustFont(fontStyle:self.sectionTitleFontStyle)
-                            .padding([.bottom], self.sectionTitleBottomPadding)
-                            VStack(spacing:0){
-                                HStack(spacing:0){
-                                    DetailColumnView(
-                                        isTailMerged: true,
-                                        row1: "계약금",
-                                        row2: "중도금",
-                                        row3: "잔금"
-                                    )
-                                        .adjustFont(fontStyle: self.smallDescriptionFontStyleBold)
-                                    DetailColumnView(
-                                        isTailMerged: true,
-                                        row1: chosenHomeType!.firstPrice.inText,
-                                        row2: chosenHomeType!.middlePrice.inText,
-                                        row3: chosenHomeType!.finalPrice.inText
-                                    )
-//                                    Spacer()
-                                    DetailColumnView(
-                                        isHeadMerged: true,
-                                        row1: "초기 필요 자금",
-                                        row1_1 : "(A)",
-                                        row1_2 : "\(chosenHomeType!.needMoneyFirst)",
-                                        row2: "입주시 필요 자금",
-                                        row2_1 : "(B)",
-                                        row2_2 : "\(chosenHomeType!.needMoneyFinal)",
-                                        row3: "대출 가능 금액",
-                                        row3_2 : "\(chosenHomeType!.loanLimit)"
-                                    )
-                                }.frame(minHeight: 240)
+                        if subscription.priceDidSet{
+                            VStack{
                                 HStack{
-                                    VStack{
-                                        HStack{
-                                            Text("청약시에 필요한 돈은")
-                                            Text("\(chosenHomeType!.needMoneyFirst)원").foregroundColor(Color.coralRed)
-                                            Text("이고")
-                                            Spacer()
-                                        }.adjustFont(fontStyle: self.sentenceFontStyle)
-                                        HStack{
-                                            HStack{
-                                                Text("(A) 계약금 + 중도금")
-                                                Group{
-                                                    if chosenHomeType!.middlePriceLoanable{
-                                                        Text(", 중도금 대출 가능 여부에 따라 달라질 수 있어요.")
-                                                    }
-                                                }
-                                            }
-                                            .padding([.top], self.sentenceSmallPaddingToTop)
-                                            Spacer()
-                                        }
-                                        .foregroundColor(Color.lightGrey)
-                                        HStack{
-                                            Text("총 필요한 금액은")
-                                            
-                                                
-                                            Text("\(chosenHomeType!.needMoneyFinal)원").foregroundColor(Color.coralRed)
-                                            Text("입니다.")
-                                            Spacer()
-                                        }
-                                        .adjustFont(fontStyle: self.sentenceFontStyle)
-                                        .padding([.top], self.sentenceBigPaddingToTop)
-                                        HStack{
-                                            VStack(alignment: .leading){
-                                               Text("(B) 잔금 - 대출 가능 금액")
-                                               Text("대출 가능 금액은 무주택자 기준으로 개인에 따라 차이가 있습니다.")
-                                           }
-                                           .foregroundColor(Color.lightGrey)
-                                            .padding([.top], self.sentenceSmallPaddingToTop)
-                                            Spacer()
-                                        }
-                                   }
+                                    Text("가격")
                                     Spacer()
-                                }.padding([.top], self.priceSentencePaddingTop)
-                            }.adjustFont(fontStyle:self.smallDescriptionFontStyle)
-                            
+                                }.adjustFont(fontStyle:self.sectionTitleFontStyle)
+                                .padding([.bottom], self.sectionTitleBottomPadding)
+                                VStack(spacing:0){
+                                    HStack(spacing:0){
+                                        DetailColumnView(
+                                            isTailMerged: true,
+                                            row1: "계약금",
+                                            row2: "중도금",
+                                            row3: "잔금"
+                                        )
+                                            .adjustFont(fontStyle: self.smallDescriptionFontStyleBold)
+                                        DetailColumnView(
+                                            isTailMerged: true,
+                                            row1: chosenHomeType!.firstPrice.inText,
+                                            row2: chosenHomeType!.middlePrice.inText,
+                                            row3: chosenHomeType!.finalPrice.inText
+                                        )
+    //                                    Spacer()
+                                        DetailColumnView(
+                                            isHeadMerged: true,
+                                            row1: "초기 필요 자금",
+                                            row1_1 : "(A)",
+                                            row1_2 : "\(chosenHomeType!.needMoneyFirst)",
+                                            row2: "입주시 필요 자금",
+                                            row2_1 : "(B)",
+                                            row2_2 : "\(chosenHomeType!.needMoneyFinal)",
+                                            row3: "대출 가능 금액",
+                                            row3_2 : "\(chosenHomeType!.loanLimit.inText)"
+                                        )
+                                    }.frame(minHeight: 240)
+                                    HStack{
+                                        VStack{
+                                            HStack{
+                                                Text("청약시에 필요한 돈은")
+                                                Text("\(chosenHomeType!.needMoneyFirst)").foregroundColor(Color.coralRed)
+                                                Text("이고")
+                                                Spacer()
+                                            }.adjustFont(fontStyle: self.sentenceFontStyle)
+                                            HStack{
+                                                VStack{
+                                                    HStack{
+                                                    Text("(A) 계약금 + 중도금")
+                                                        Spacer()
+                                                    }
 
-                        }.padding([.top], self.sectionPaddingTop)
+                                                    Group{
+                                                        if chosenHomeType!.middlePriceLoanable{
+                                                            HStack{
+                                                            Text("중도금 대출 가능 여부에 따라 달라질 수 있습니다.")
+                                                                Spacer()
+                                                            }
+
+                                                        }
+                                                    }.padding([.top], self.sentenceSmallPaddingToTop)
+                                                }
+                                                .padding([.top], self.sentenceSmallPaddingToTop)
+                                                Spacer()
+                                            }
+                                            .foregroundColor(Color.lightGrey)
+                                            HStack{
+                                                Text("입주 시점에는")
+                                                
+                                                    
+                                                Text("\(chosenHomeType!.needMoneyFinal)").foregroundColor(Color.coralRed)
+                                                Text("이 더 필요해요.")
+                                                Spacer()
+                                            }
+                                            .adjustFont(fontStyle: self.sentenceFontStyle)
+                                            .padding([.top], self.sentenceBigPaddingToTop)
+                                            HStack{
+                                                VStack(alignment: .leading){
+                                                   Text("(B) 잔금 - 대출 가능 금액")
+                                                   Text("대출 가능 금액은 무주택자 기준으로 개인에 따라 차이가 있을 수 있습니다.")
+                                               }
+                                               .foregroundColor(Color.lightGrey)
+                                                .padding([.top], self.sentenceSmallPaddingToTop)
+                                                Spacer()
+                                            }
+                                       }
+                                        Spacer()
+                                    }.padding([.top], self.priceSentencePaddingTop)
+                                }.adjustFont(fontStyle:self.smallDescriptionFontStyle)
+                                
+
+                            }.padding([.top], self.sectionPaddingTop)
+                        }
+
                     }
                 }
             }

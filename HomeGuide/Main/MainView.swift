@@ -23,7 +23,7 @@ struct MainView: View {
                     VStack(spacing : 0){
                         HeadView()
     //                        Spacer().frame(height:1)
-                        FilterView(modelView:modelView)
+//                        FilterView(modelView:modelView)
                     }
                         Spacer().frame(height:3)
                             if !modelView.model.isFilterOpen{
@@ -165,14 +165,13 @@ struct FilterView: View{
                 .frame(maxHeight : self.unOpenedMaxHeight)
             }else{
                 VStack(spacing:0){
-//                    ScrollView{
+                    ScrollView{
                         ForEach(self.modelView.model.filters, id : \.self.id){filter in
-                            FilterRowView(modelView: self.modelView, filterCategory: filter).cardify(.small).frame(height : self.filterRowViewHeight)
+                            FilterRowView(modelView: self.modelView, filterCategory: filter).cardify(.small).frame(height : 100)
                         }
                         Spacer()
-                        
-                        
-//                    }
+            
+                    }
 //                    ZStack{
 //                        Color.white
 //                        GeometryReader{geometry in
@@ -244,6 +243,13 @@ struct FilterRowView : View{
     let stepperHeight = CGFloat(50)
     let optionDetailpaddingToLead = CGFloat(20)
     let optionDetailpaddingToTrail = CGFloat(20)
+    var frameHeight: CGFloat{
+        if filterCategory.optionList!.count > 8{
+            return 200
+        }else{
+            return 80
+        }
+    }
     @State private var celsius: Int = 1
     var body: some View{
         VStack{
@@ -295,7 +301,7 @@ struct FilterRowView : View{
 //                        Text("\(celsius)")
 //                    }
 //                }
-            }
+            }.frame(height : self.frameHeight)
 
         }
 
