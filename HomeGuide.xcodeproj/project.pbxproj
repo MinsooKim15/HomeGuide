@@ -14,7 +14,9 @@
 		0204EA0C24B868A8001D8B6F /* MultiSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0B24B868A8001D8B6F /* MultiSlider.swift */; };
 		0204EA0E24B868C8001D8B6F /* MultiSliderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */; };
 		0204EA1024B868E6001D8B6F /* MultiValueSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */; };
-		025D425024BF20B500098A2A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 025D424F24BF20B500098A2A /* GoogleService-Info.plist */; };
+		0225DD6A24CF188E00830B12 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0225DD6924CF188E00830B12 /* CoreTelephony.framework */; };
+		027CEBA024D5B20E00FDDD6B /* FirebaseImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027CEB9F24D5B20E00FDDD6B /* FirebaseImage.swift */; };
+		029F198C24D58CBC00829C08 /* GADSmartBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029F198B24D58CBC00829C08 /* GADSmartBannerViewController.swift */; };
 		02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */; };
 		02B20A1B24AA3B21008E7BF4 /* Cardify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1A24AA3B21008E7BF4 /* Cardify.swift */; };
 		02B20A1D24AADF26008E7BF4 /* AdjustFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */; };
@@ -23,6 +25,8 @@
 		02B20A2324AB1D83008E7BF4 /* Cellify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2224AB1D83008E7BF4 /* Cellify.swift */; };
 		02B20A2524AB364B008E7BF4 /* GADBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2424AB364B008E7BF4 /* GADBannerViewController.swift */; };
 		02B20A2724AC96CF008E7BF4 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B20A2624AC96CF008E7BF4 /* Grid.swift */; };
+		02E17A2524CB1A58003BCF1F /* AdfitBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E17A2424CB1A58003BCF1F /* AdfitBannerViewController.swift */; };
+		02E17A2724CBE7D3003BCF1F /* Badge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E17A2624CBE7D3003BCF1F /* Badge.swift */; };
 		02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882224A4EF3200237AB3 /* HomeModelView.swift */; };
 		02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882424A4F43700237AB3 /* HomeGuideModel.swift */; };
 		02E5882724A78FF800237AB3 /* SubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */; };
@@ -53,7 +57,11 @@
 		0204EA0B24B868A8001D8B6F /* MultiSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSlider.swift; sourceTree = "<group>"; };
 		0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderExtensions.swift; sourceTree = "<group>"; };
 		0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiValueSlider.swift; sourceTree = "<group>"; };
+		0225DD6924CF188E00830B12 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		025D424F24BF20B500098A2A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		027CEB9F24D5B20E00FDDD6B /* FirebaseImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseImage.swift; sourceTree = "<group>"; };
+		028DCDB024C528E0003327D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		029F198B24D58CBC00829C08 /* GADSmartBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GADSmartBannerViewController.swift; sourceTree = "<group>"; };
 		02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Subtract.swift"; sourceTree = "<group>"; };
 		02B20A1A24AA3B21008E7BF4 /* Cardify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cardify.swift; sourceTree = "<group>"; };
 		02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustFont.swift; sourceTree = "<group>"; };
@@ -62,6 +70,8 @@
 		02B20A2224AB1D83008E7BF4 /* Cellify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cellify.swift; sourceTree = "<group>"; };
 		02B20A2424AB364B008E7BF4 /* GADBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GADBannerViewController.swift; sourceTree = "<group>"; };
 		02B20A2624AC96CF008E7BF4 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		02E17A2424CB1A58003BCF1F /* AdfitBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdfitBannerViewController.swift; sourceTree = "<group>"; };
+		02E17A2624CBE7D3003BCF1F /* Badge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Badge.swift; sourceTree = "<group>"; };
 		02E5882224A4EF3200237AB3 /* HomeModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModelView.swift; sourceTree = "<group>"; };
 		02E5882424A4F43700237AB3 /* HomeGuideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideModel.swift; sourceTree = "<group>"; };
 		02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailView.swift; sourceTree = "<group>"; };
@@ -95,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0225DD6A24CF188E00830B12 /* CoreTelephony.framework in Frameworks */,
 				26B61D34ED57105B9D5BD1E1 /* Pods_HomeGuide.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -114,15 +125,40 @@
 			path = MultiSlider;
 			sourceTree = "<group>";
 		};
+		028DCDAB24C523DD003327D5 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				028DCDAD24C523EA003327D5 /* Prod */,
+				028DCDAC24C523E4003327D5 /* Dev */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		028DCDAC24C523E4003327D5 /* Dev */ = {
+			isa = PBXGroup;
+			children = (
+				028DCDB024C528E0003327D5 /* GoogleService-Info.plist */,
+			);
+			path = Dev;
+			sourceTree = "<group>";
+		};
+		028DCDAD24C523EA003327D5 /* Prod */ = {
+			isa = PBXGroup;
+			children = (
+				025D424F24BF20B500098A2A /* GoogleService-Info.plist */,
+			);
+			path = Prod;
+			sourceTree = "<group>";
+		};
 		02E5882A24A825EF00237AB3 /* Main */ = {
 			isa = PBXGroup;
 			children = (
 				02E5882424A4F43700237AB3 /* HomeGuideModel.swift */,
+				02E5882224A4EF3200237AB3 /* HomeModelView.swift */,
 				02F8DADB24A4E5D70066D114 /* MainView.swift */,
 				0204EA0224B04922001D8B6F /* AddAdevertisement.swift */,
 				02E5884224A9BC4500237AB3 /* Burblify.swift */,
 				02B20A1A24AA3B21008E7BF4 /* Cardify.swift */,
-				02E5882224A4EF3200237AB3 /* HomeModelView.swift */,
 				02B20A1C24AADF26008E7BF4 /* AdjustFont.swift */,
 				02B20A1E24AAE659008E7BF4 /* Color+Extension.swift */,
 				02B20A2024AB06FE008E7BF4 /* Pickify.swift */,
@@ -146,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				02E5882624A78FF800237AB3 /* SubscriptionDetailView.swift */,
+				02E17A2624CBE7D3003BCF1F /* Badge.swift */,
 				02B20A2624AC96CF008E7BF4 /* Grid.swift */,
 			);
 			path = SubscriptionDetail;
@@ -165,7 +202,6 @@
 		02F8DACB24A4E5D70066D114 = {
 			isa = PBXGroup;
 			children = (
-				0204EA0624B86831001D8B6F /* MultiSlider */,
 				02F8DAD624A4E5D70066D114 /* HomeGuide */,
 				02F8DAD524A4E5D70066D114 /* Products */,
 				6035D483E3ADC9E4DD39E8D2 /* Pods */,
@@ -184,6 +220,8 @@
 		02F8DAD624A4E5D70066D114 /* HomeGuide */ = {
 			isa = PBXGroup;
 			children = (
+				028DCDAB24C523DD003327D5 /* Firebase */,
+				0204EA0624B86831001D8B6F /* MultiSlider */,
 				02E5884424A9D58C00237AB3 /* Color+Hex.swift */,
 				02AECE7B24AA0DCE00A7769A /* Date+Subtract.swift */,
 				02E5883224A82C0200237AB3 /* SubscriptionDetail */,
@@ -194,12 +232,14 @@
 				02F8DAD924A4E5D70066D114 /* SceneDelegate.swift */,
 				02E5882824A794B700237AB3 /* Array+Identifiable.swift */,
 				02F8DADD24A4E5D90066D114 /* Assets.xcassets */,
-				025D424F24BF20B500098A2A /* GoogleService-Info.plist */,
 				02F8DAE224A4E5D90066D114 /* LaunchScreen.storyboard */,
 				02EB6E2624BD349300928972 /* Degug.xcconfig */,
 				02EB6E2724BD34AC00928972 /* Release.xcconfig */,
 				02F8DAE524A4E5D90066D114 /* Info.plist */,
+				02E17A2424CB1A58003BCF1F /* AdfitBannerViewController.swift */,
 				02B20A2424AB364B008E7BF4 /* GADBannerViewController.swift */,
+				027CEB9F24D5B20E00FDDD6B /* FirebaseImage.swift */,
+				029F198B24D58CBC00829C08 /* GADSmartBannerViewController.swift */,
 				02F8DADF24A4E5D90066D114 /* Preview Content */,
 			);
 			path = HomeGuide;
@@ -225,6 +265,7 @@
 		85023C8C980A0BD75F39B04E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0225DD6924CF188E00830B12 /* CoreTelephony.framework */,
 				0619EAD1156FFCAF5F771302 /* Pods_HomeGuide.framework */,
 			);
 			name = Frameworks;
@@ -240,6 +281,7 @@
 				881EF9A6FB0FD908A9C671C3 /* [CP] Check Pods Manifest.lock */,
 				02F8DAD024A4E5D70066D114 /* Sources */,
 				02F8DAD124A4E5D70066D114 /* Frameworks */,
+				028DCDAF24C52472003327D5 /* Setup Firebase Environment GoogleService-Info.plist */,
 				02F8DAD224A4E5D70066D114 /* Resources */,
 				83798AD94F04646B56252A4A /* [CP] Embed Pods Frameworks */,
 			);
@@ -291,7 +333,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				02F8DAE424A4E5D90066D114 /* LaunchScreen.storyboard in Resources */,
-				025D425024BF20B500098A2A /* GoogleService-Info.plist in Resources */,
 				02F8DAE124A4E5D90066D114 /* Preview Assets.xcassets in Resources */,
 				02E5883C24A9A42A00237AB3 /* NanumSquareOTFRegular.otf in Resources */,
 				02E5883B24A9A42A00237AB3 /* NanumSquareOTFLight.otf in Resources */,
@@ -304,6 +345,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		028DCDAF24C52472003327D5 /* Setup Firebase Environment GoogleService-Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Setup Firebase Environment GoogleService-Info.plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# Name of the resource we're selectively copying\nGOOGLESERVICE_INFO_PLIST=GoogleService-Info.plist\n\n# Get references to dev and prod versions of the GoogleService-Info.plist\n# NOTE: These should only live on the file system and should NOT be part of the target (since we'll be adding them to the target manually)\nGOOGLESERVICE_INFO_DEV=${PROJECT_DIR}/${TARGET_NAME}/Firebase/Dev/${GOOGLESERVICE_INFO_PLIST}\nGOOGLESERVICE_INFO_PROD=${PROJECT_DIR}/${TARGET_NAME}/Firebase/Prod/${GOOGLESERVICE_INFO_PLIST}\n\n# Make sure the dev version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_DEV}\"\nif [ ! -f $GOOGLESERVICE_INFO_DEV ]\nthen\n    echo \"No Development GoogleService-Info.plist found. Please ensure it's in the proper directory.\"\n    exit 1\nfi\n\n# Make sure the prod version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_PROD}\"\nif [ ! -f $GOOGLESERVICE_INFO_PROD ]\nthen\n    echo \"No Production GoogleService-Info.plist found. Please ensure it's in the proper directory.\"\n    exit 1\nfi\n\n# Get a reference to the destination location for the GoogleService-Info.plist\nPLIST_DESTINATION=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\necho \"Will copy ${GOOGLESERVICE_INFO_PLIST} to final destination: ${PLIST_DESTINATION}\"\n\n# Copy over the prod GoogleService-Info.plist for Release builds\nif [ \"${CONFIGURATION}\" == \"Release\" ]\nthen\n    echo \"Using ${GOOGLESERVICE_INFO_PROD}\"\n    cp \"${GOOGLESERVICE_INFO_PROD}\" \"${PLIST_DESTINATION}\"\nelse\n    echo \"Using ${GOOGLESERVICE_INFO_DEV}\"\n    cp \"${GOOGLESERVICE_INFO_DEV}\" \"${PLIST_DESTINATION}\"\nfi\n";
+		};
 		83798AD94F04646B56252A4A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -355,10 +414,13 @@
 				0204EA0E24B868C8001D8B6F /* MultiSliderExtensions.swift in Sources */,
 				02E5883124A8266A00237AB3 /* SettingView.swift in Sources */,
 				0204EA0A24B8688A001D8B6F /* MultiSlider+Internal.swift in Sources */,
+				029F198C24D58CBC00829C08 /* GADSmartBannerViewController.swift in Sources */,
 				02B20A2724AC96CF008E7BF4 /* Grid.swift in Sources */,
+				027CEBA024D5B20E00FDDD6B /* FirebaseImage.swift in Sources */,
 				02E5882524A4F43700237AB3 /* HomeGuideModel.swift in Sources */,
 				02B20A1D24AADF26008E7BF4 /* AdjustFont.swift in Sources */,
 				0204EA0824B86842001D8B6F /* MultiSlider+Drag.swift in Sources */,
+				02E17A2724CBE7D3003BCF1F /* Badge.swift in Sources */,
 				02F8DAD824A4E5D70066D114 /* AppDelegate.swift in Sources */,
 				02F8DADA24A4E5D70066D114 /* SceneDelegate.swift in Sources */,
 				02E5884524A9D58D00237AB3 /* Color+Hex.swift in Sources */,
@@ -373,6 +435,7 @@
 				0204EA0524B84BD3001D8B6F /* FilterCellify.swift in Sources */,
 				02B20A2124AB06FE008E7BF4 /* Pickify.swift in Sources */,
 				02E5882924A794B700237AB3 /* Array+Identifiable.swift in Sources */,
+				02E17A2524CB1A58003BCF1F /* AdfitBannerViewController.swift in Sources */,
 				0204EA1024B868E6001D8B6F /* MultiValueSlider.swift in Sources */,
 				02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */,
 				02AECE7C24AA0DCE00A7769A /* Date+Subtract.swift in Sources */,
@@ -516,7 +579,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HomeGuide/Preview Content\"";
 				DEVELOPMENT_TEAM = CAVCZ3AJRJ;
 				ENABLE_PREVIEWS = YES;
@@ -525,6 +588,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = kr.ac.yonsei.minsookim.HomeGuide;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -538,7 +602,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HomeGuide/Preview Content\"";
 				DEVELOPMENT_TEAM = CAVCZ3AJRJ;
 				ENABLE_PREVIEWS = YES;
@@ -547,6 +611,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = kr.ac.yonsei.minsookim.HomeGuide;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

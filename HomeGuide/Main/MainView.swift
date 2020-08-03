@@ -22,37 +22,51 @@ struct MainView: View {
                 VStack(spacing : 0){
                     VStack(spacing : 0){
                         HeadView()
-    //                        Spacer().frame(height:1)
-//                        FilterView(modelView:modelView)
+                        Spacer().frame(height:1)
+                        FilterView(modelView:modelView)
                     }
                         Spacer().frame(height:3)
                             if !modelView.model.isFilterOpen{
-                                List{
-                                    
-                                    // TODO : let index = array.firstIndex(of: item)를 이용해서 index를 받는다.
-                                            ForEach(modelView.model.subscriptions, id:\.self.id){subscription in
-                                                VStack{
-                                                    ZStack(alignment:.leading){
-                                                        Color.white
-                                                        SubscriptionCardView(subscription: subscription).frame(minWidth:0, maxWidth:.infinity)
-                                                        NavigationLink(destination: SubscriptionDetailView(subscription: subscription, modelView:self.modelView)){
-                                                            EmptyView()
+                                if modelView.model.subscriptions.count != 0{
+                                    List{
+                                        // TODO : let index = array.firstIndex(of: item)를 이용해서 index를 받는다.
+                                                ForEach(modelView.model.subscriptions, id:\.self.id){subscription in
+                                                    VStack{
+                                                        ZStack(alignment:.leading){
+                                                            Color.white
+                                                            SubscriptionCardView(subscription: subscription).frame(minWidth:0, maxWidth:.infinity)
+                                                            NavigationLink(destination: SubscriptionDetailView(subscription: subscription, modelView:self.modelView)){
+                                                                EmptyView()
+                                                                }
+                                                                
+                                                            
+                                                            .buttonStyle(PlainButtonStyle())
+                                                            .frame(width: 0)
+                                                            .opacity(0)
                                                         }
-                                                        .buttonStyle(PlainButtonStyle())
-                                                        .frame(width: 0)
-                                                        .opacity(0)
-                                                    }
-                                                        // nil이 되면 항상 0이니까 광고 미노출
-                                                    .addAdvertisement(index: self.modelView.model.subscriptions.firstIndex(matching: subscription) ?? 0)
-                                                }.listRowInsets(EdgeInsets())
-                                             }
-                                        }
-                                        .onAppear {
-                                            UITableView.appearance().backgroundColor = Color(hex:"F0F0F0").uiColor()
-                                            UITableView.appearance().separatorStyle = .none
-                                            UITableViewCell.appearance().backgroundColor = .clear
+                                                        
+                                                            // nil이 되면 항상 0이니까 광고 미노출
+                                                        .addAdvertisement(index: self.modelView.model.subscriptions.firstIndex(matching: subscription) ?? 0)
+                                                    }.listRowInsets(EdgeInsets())
+                                                 }
+                                            }
+                                            .onAppear {
+                                                UITableView.appearance().backgroundColor = Color(hex:"F0F0F0").uiColor()
+                                                UITableView.appearance().separatorStyle = .none
+                                                UITableViewCell.appearance().backgroundColor = .clear
+                                            }
+                                            .onDisappear {       UITableView.appearance().separatorStyle = .singleLine     }
+
+                                }else{
+                                    VStack{
+                                        Spacer()
+                                        Text("새로운 조건의 청약을 찾아보세요.")
+                                        Spacer()
+                                    }
+                                    .foregroundColor(.grey)
+
                                 }
-                                        .onDisappear {       UITableView.appearance().separatorStyle = .singleLine     }
+                                        
                                     }
                             }
                         .navigationBarTitle("")
@@ -94,6 +108,7 @@ struct HeadView: View{
                         .padding([.leading], titlePaddingToLeading)
                     Spacer()
                 }
+                .foregroundColor(.black)
                 .padding([.top],headViewPaddingToTop)
             }
             ExDivider()
@@ -142,6 +157,7 @@ struct FilterView: View{
                         ScrollView(.horizontal, showsIndicators : false){
                             HStack{
                                 Spacer().frame(width: paddingToLead)
+                                
                                 ForEach(modelView.model.filters, id: \.self.titleDisplay){ filter in
                                     Group{
                                         Text(filter.choosenOptionString)
@@ -150,6 +166,8 @@ struct FilterView: View{
                                             .font(.custom(self.customFontRegular, size:self.fontSize))
                                             .padding([.top,.bottom], 5)
                                         Spacer().frame(width:self.spaceBetweenFilterBubble)
+                                    }.onTapGesture {
+                                        self.modelView.openFilter()
                                     }
                                 }
 
@@ -167,10 +185,11 @@ struct FilterView: View{
                 VStack(spacing:0){
                     ScrollView{
                         ForEach(self.modelView.model.filters, id : \.self.id){filter in
-                            FilterRowView(modelView: self.modelView, filterCategory: filter).cardify(.small).frame(height : 100)
+                            FilterRowView(modelView: self.modelView, filterCategory: filter)
+                                .cardify(.small)
+                                .foregroundColor(.black)
                         }
                         Spacer()
-            
                     }
 //                    ZStack{
 //                        Color.white
@@ -243,12 +262,11 @@ struct FilterRowView : View{
     let stepperHeight = CGFloat(50)
     let optionDetailpaddingToLead = CGFloat(20)
     let optionDetailpaddingToTrail = CGFloat(20)
+    let columnCount = 3
+    let cellHeight = CGFloat(30)
     var frameHeight: CGFloat{
-        if filterCategory.optionList!.count > 8{
-            return 200
-        }else{
-            return 80
-        }
+        let rowCount =  Int(ceil(Double(filterCategory.optionList!.count)/Double(self.columnCount)))
+        return CGFloat(rowCount) * self.cellHeight
     }
     @State private var celsius: Int = 1
     var body: some View{
@@ -257,50 +275,41 @@ struct FilterRowView : View{
                 Text(filterCategory.titleDisplay)
                     .adjustFont(fontStyle: self.titleFontStyle)
                 Spacer()
+                Text("전체 선택")
+                .foregroundColor(.grey)
+                    .adjustFont(fontStyle: self.filterTextStyle)
+                    .onTapGesture {
+                        self.modelView.chooseAllFilterOption(filterCategory: self.filterCategory)
+                }
             }
             Group{
                 if filterCategory.dataType == .discrete{
-                    Grid(items:filterCategory.optionList!, columnCount: 3){option in
-                        //TODO : Cellify 대체할만한 modifier 만들기 isChoosen을 받을 수 있어야 함.
-                        Text(option.value)
-                            .adjustFont(fontStyle: self.filterTextStyle)
-                            .filterCellify(choosen: option.choosen,choosenStrokeColor: self.choosenCellColor ,notChoosenStrokeColor:self.notChoosenCellColor)
-                            .onTapGesture {
-                                self.modelView.chooseFilterOption(filterCategory: self.filterCategory, filterOption: option)
+                    Group{
+                        // MARK:- allChosen일 때 전체를 회색으로 보이고 픈 코드, 중복이 엄청나게 많다.
+                        if (!filterCategory.isAllChosen) || (filterCategory.multiSelectAble){
+                            Grid(items:filterCategory.optionList!, columnCount: self.columnCount){option in
+                                //TODO : Cellify 대체할만한 modifier 만들기 isChoosen을 받을 수 있어야 함.
+                                Text(option.value)
+                                    .adjustFont(fontStyle: self.filterTextStyle)
+                                    .filterCellify(choosen: option.choosen,choosenStrokeColor: self.choosenCellColor ,notChoosenStrokeColor:self.notChoosenCellColor)
+                                    .onTapGesture {
+                                        self.modelView.chooseFilterOption(filterCategory: self.filterCategory, filterOption: option)
+                                }
+                            }
+                        }else{
+                            Grid(items:filterCategory.optionList!, columnCount: self.columnCount){option in
+                                //TODO : Cellify 대체할만한 modifier 만들기 isChoosen을 받을 수 있어야 함.
+                                Text(option.value)
+                                    .adjustFont(fontStyle: self.filterTextStyle)
+                                    .filterCellify(choosen: false,choosenStrokeColor: self.choosenCellColor ,notChoosenStrokeColor:self.notChoosenCellColor)
+                                    .onTapGesture {
+                                        self.modelView.chooseFilterOption(filterCategory: self.filterCategory, filterOption: option)
+                                }
+                            }
                         }
                     }
+
                 }
-//                else{
-//                    EmptyView()
-//                    //TODO : 범위형 검색 추가
-//                    VStack{
-//                        HStack{
-//                            //TODO : 스테퍼 직접 만들어야겠다 ㅜㅜ
-//                            Spacer().frame(width: self.optionDetailpaddingToLead)
-//                            VStack{
-//                                Stepper("", onIncrement: {
-//                                    self.celsius += 1
-//                                }, onDecrement: {
-//                                    self.celsius -= 1
-//                                    })
-//                                    .frame(width: self.stepperWidth, height : self.stepperHeight)
-//                            }
-//                            Spacer()
-//                            Text("~")
-//                            Spacer()
-//                            VStack{
-//                                Stepper("", onIncrement: {
-//                                    self.celsius += 1
-//                                }, onDecrement: {
-//                                    self.celsius -= 1
-//                                })
-//                                .frame(width: self.stepperWidth, height : self.stepperHeight)
-//                            }
-//                            Spacer().frame(width: self.optionDetailpaddingToTrail)
-//                        }
-//                        Text("\(celsius)")
-//                    }
-//                }
             }.frame(height : self.frameHeight)
 
         }
@@ -311,83 +320,8 @@ struct FilterRowView : View{
     }
 }
 
-
-// MARK: - DetailView에서 쓸 값들
-//Group{
-//    if filterCategory.dataType == HomeGuideModel.DataStyle.discrete{
-//        Grid(items: filterCategory.optionList!, columnCount: 4){option in
-//            Text("\(option.value)")
-//                .burblify(isChoosen: option.choosen, notChoosenStrokeColor: Color.whiteGrey, choosenStrokeColor: Color.coralRed)
-//                .frame(maxHeight: self.filterBurbleMaxHeight)
-//                .onTapGesture {
-//                    self.modelView.chooseFilterOption(filterOption: option)
-//            }
-//        }
-//    }else{
-//        Text("범위형")
-//    }
-//}
-
-
-struct FilterDetailView: View{
-    @ObservedObject var modelView:HomeModelView
-    
-    let titlePaddingToTop = CGFloat(20)
-    let titlePaddingToLead = CGFloat(20)
-    let titleFontStyle = CustomFontStyle.sectionTitle
-    var body: some View{
-        Group{
-            if modelView.model.choosenFilterCategory != nil{
-                ScrollView{
-                    VStack{
-                        HStack{
-                            Text("\(modelView.model.choosenFilterCategory!.titleDisplay)")
-                            Spacer()
-                        }
-                        .adjustFont(fontStyle:self.titleFontStyle)
-                        .padding([.top], self.titlePaddingToTop)
-                        .padding([.leading], self.titlePaddingToLead)
-                        HStack{
-                            Group{
-                                if modelView.model.choosenFilterCategory!.optionList != nil{
-                                    Grid(items: modelView.model.choosenFilterCategory!.optionList!, columnCount: 6){ option in
-                                        Group{
-                                            if !option.choosen {
-                                                Text("\(option.value)").onTapGesture {
-                                                                                            self.modelView.chooseFilterOption(filterOption: option)
-                                                                                        }
-                                                                                    }else{
-                                                                                        Text("\(option.value)").onTapGesture {
-                                                                                            self.modelView.chooseFilterOption(filterOption: option)
-                                                                                        }.foregroundColor(Color.red)
-                                    }
-                                    }
-//                                    ForEach(modelView.model.choosenFilterCategory!.optionList!,id:\.self){ option in
-//                                        Group{
-//                                            if !option.choosen {
-//                                                Text("\(option.value)").onTapGesture {
-//                                                    self.modelView.chooseFilterOption(filterOption: option)
-//                                                }
-//                                            }else{
-//                                                Text("\(option.value)").onTapGesture {
-//                                                    self.modelView.chooseFilterOption(filterOption: option)
-//                                                }.foregroundColor(Color.red)
-//                                            }
-//                                        }
-//                                    }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 struct SubscriptionCardView: View{
     var subscription : HomeGuideModel.Subscription
-    
     
     // MARK: - Control Panel for UI
     let priceFontSize = CGFloat(20)
@@ -399,7 +333,7 @@ struct SubscriptionCardView: View{
     let descriptionBPaddingBottom = CGFloat(18)
     let fontColorHighlight = Color(hex: "FF4162")
     let fontColorDescriptionB = Color(hex:"A0A0A2")
-    let datePaddingToTrail = CGFloat(40)
+    let datePaddingToTrail = CGFloat(30)
 
     let sectionTitleFontStyle = CustomFontStyle.sectionTitle
     let sectionDescriptionAFontStyle = CustomFontStyle.sectionDescription
@@ -408,64 +342,127 @@ struct SubscriptionCardView: View{
     let circleHeight = CGFloat(54)
     let circleFontStyle = CustomFontStyle.sectionSmallDescriptionB
     let circleLineWidth = CGFloat(0.6)
+    let badgeWidth = CGFloat(50)
+    let badgeHeight = CGFloat(20)
+    let cornerRadius = CGFloat(5)
+    let badgeBackgroundColor = Color.coralRed
+    let badgeTextColor = Color.white
+    let newBadgeBackgroundColor = Color.grey
     var body: some View{
-                    HStack{
-                        VStack(alignment:.leading){
-                            Text(subscription.title)
-                                .adjustFont(fontStyle: self.sectionTitleFontStyle)
-                                .padding([.top], self.titlePaddingTop)
-                            Text(subscription.address.full)
-                                .adjustFont(fontStyle:self.sectionDescriptionAFontStyle)
-                                .padding([.top], self.descriptionAPaddingTop)
-                            HStack{
-                                Text(subscription.buildingType)
-                                Text("|")
-                                Text(subscription.subscriptionType)
-                                Group{
-                                    Text("|")
-                                    if subscription.lowestPrice != nil{
-                                        Text(subscription.lowestPrice!.inText + "부터")
-                                    }
-                                }
-                            }.adjustFont(fontStyle:self.sectionDescriptionBFontStyle)
+//        GeometryReader{geometry in
+                                HStack{
+                                    VStack(alignment:.leading){
+                                        Text(self.subscription.title)
+                                            .adjustFont(fontStyle: self.sectionTitleFontStyle)
+                                            .padding([.top], self.titlePaddingTop)
+                                        Text(self.subscription.address.full)
+                                            .adjustFont(fontStyle:self.sectionDescriptionAFontStyle)
+                                            .padding([.top], self.descriptionAPaddingTop)
+                                        HStack(){
+                                            Group{
+                                                if self.subscription.isNew == true{
+                                                    ZStack{
+                                                        RoundedRectangle(cornerRadius:self.cornerRadius)
+                                                        .fill()
+                                                        .foregroundColor(self.newBadgeBackgroundColor)
+                                                        .frame(width: self.badgeWidth, height: self.badgeHeight)
+                                                        Text("NEW")
+                                                            .foregroundColor(self.badgeTextColor)
+                                                    }
+                                                }
+                                                if self.subscription.noRank == true{
+                                                    ZStack{
+                                                        RoundedRectangle(cornerRadius:self.cornerRadius)
+                                                        .fill()
+                                                        .foregroundColor(self.badgeBackgroundColor)
+                                                        .frame(width: self.badgeWidth, height: self.badgeHeight)
+                                                        Text("무가점")
+                                                            .foregroundColor(self.badgeTextColor)
+                                                    }
+                                                }
+                                            }
+                                            Text(self.subscription.buildingType)
+                                            Group{
+                                                if self.subscription.subscriptionType.count > 1{
+                                                    Text("|")
+                                                    Text(self.subscription.subscriptionType)
 
-                                .padding([.top], self.descriptionBPaddingTop)
-                                .padding([.bottom], self.descriptionBPaddingBottom)
-                                .foregroundColor(self.fontColorDescriptionB)
-                        }.padding([.leading], self.paddingToLead)
-                        Spacer()
-                        VStack{
-                            HStack{
-                                
-                                Group{
-                                    if subscription.dateLeftInString != nil{
-                                        ZStack{
-                                            Circle()
-                                                .stroke(lineWidth: CGFloat(self.circleLineWidth))
-                                            .foregroundColor(.coralRed)
-                                            .frame(width:self.circleWidth, height: self.circleHeight)
-                                            Text(subscription.dateLeftInString!)
-                                                .adjustFont(fontStyle:self.circleFontStyle)
-                                                .foregroundColor(self.fontColorHighlight)
+                                                }
+                                            }
+                                            Group{
+                                                if (self.subscription.lowestPrice != nil)&&(self.subscription.noRank == false){
+                                                    Text("|")
+                                                    Text(self.subscription.lowestPrice!.inText + "부터")
+                                                }
+                                            }
+
+                                            Spacer()
+                                        }.adjustFont(fontStyle:self.sectionDescriptionBFontStyle)
+
+                                            .padding([.top], self.descriptionBPaddingTop)
+                                            .padding([.bottom], self.descriptionBPaddingBottom)
+                                            .foregroundColor(self.fontColorDescriptionB)
+                                    }
+                                    .padding([.leading], self.paddingToLead)
+//                                    .frame(width:geometry.size.width * 0.7)
+                                    Spacer()
+                                    VStack{
+                                        HStack{
+                                            ZStack{
+            //                                    if subscription.dateLeftInString != nil{
+            //                                        ZStack{
+            //                                            Circle()
+            //                                                .stroke(lineWidth: CGFloat(self.circleLineWidth))
+            //                                            .foregroundColor(.coralRed)
+            //                                            .frame(width:self.circleWidth, height: self.circleHeight)
+            //                                            Text(subscription.dateLeftInString!)
+            //                                                .adjustFont(fontStyle:self.circleFontStyle)
+            //                                                .foregroundColor(self.fontColorHighlight)
+            //                                        }
+            //                                    }
+                                                Image(subscription.iconName)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width:50, height:50)
+                                                Group{
+                                                    if subscription.showHighlightLabel{
+                                                        ZStack{
+                                                            Rectangle()
+                                                                .fill()
+                                                                .foregroundColor(.coralRed)
+                                                            Text(subscription.dateLeftInString!)
+                                                                .foregroundColor(.white)
+                                                                .adjustFont(fontStyle: .sectionSmallDescriptionA)
+                                                       }
+                                                        .frame(width:80, height:20)
+                                                        .rotationEffect(.degrees(30))
+                                                    }else if subscription.showLabel{
+                                                        ZStack{
+                                                            Rectangle()
+                                                                .fill()
+                                                                .foregroundColor(.lightGrey)
+                                                            Text(subscription.dateLeftInString!)
+                                                                .foregroundColor(.white)
+                                                                .adjustFont(fontStyle: .sectionSmallDescriptionA)
+                                                        }
+                                                        .frame(width:70, height:20)
+                                                        .rotationEffect(.degrees(30))
+                                                    }
+                                                }
+                                            }
+                                            Spacer().frame(width: self.datePaddingToTrail)
                                         }
-                                    }
-                                }
-                                Spacer().frame(width: self.datePaddingToTrail)
-                            }
 
-            //            Group{
-            //                if subscription.lowestPrice != nil{
-            //                        Text(subscription.lowestPrice!.inText)
-            //                            .font(.custom(self.customFontBold, size : self.priceFontSize)) .foregroundColor(self.fontColorHighlight)
-            //                        Text("부터")
-            //                }
-            //            }
-                        }                            .adjustFont(fontStyle:self.sectionDescriptionBFontStyle)
-                        // TODO : Image 넣기 없으면 기본 이미지 로직까지 - 이미지는 먼 미래
-                    }
+                                    }.frame(width:100)
+//                                    .frame(width:geometry.size.width * 0.3)
+                                    .adjustFont(fontStyle:self.sectionDescriptionBFontStyle)
+                                    // TODO : Image 넣기 없으면 기본 이미지 로직까지 - 이미지는 먼 미래
+                                }
+                                .foregroundColor(.black)
+            
+//        }
     }
 }
-
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         let modelView = HomeModelView()

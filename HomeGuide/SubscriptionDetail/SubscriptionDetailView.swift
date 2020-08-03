@@ -17,21 +17,39 @@ struct SubscriptionDetailView : View{
     let navBarMaxHeight = CGFloat(50)
     var body: some View{
         VStack(spacing:0){
+            ZStack{
+                Color.white.edgesIgnoringSafeArea(.all)
             VStack(spacing:0){
-                HStack{
-                    Button(action:{self.presentationMode.wrappedValue.dismiss()} ){
-                        return Image(systemName: "chevron.left").foregroundColor(.coralRed)
+                    HStack{
+                        Button(action:{self.presentationMode.wrappedValue.dismiss()} ){
+                            return Image(systemName: "chevron.left").foregroundColor(.coralRed)
+                        }
+                        .padding([.leading], self.navBarPaddingToLead)
+                        .padding([.top], self.navBarPaddingToTop)
+                        Spacer()
                     }
-                    .padding([.leading], self.navBarPaddingToLead)
-                    .padding([.top], self.navBarPaddingToTop)
                     Spacer()
+                    ExDivider()
                 }
-                Spacer()
-                ExDivider()
             }
             .frame(maxHeight: self.navBarMaxHeight)
+            .onAppear {
+                self.modelView.showDescriptionScreen(self.subscription)
+            }
             List{
-                SubscriptionHeadView(subscription : subscription).cardify(.head)
+                SubscriptionHeadView(subscription : subscription)
+                    .cardify(.head)
+                    .onAppear{
+                        print("\(self.subscription.imgName)+!!!!!!!+!!!!!!!")
+                    }
+                if subscription.imgName != nil{
+                    VStack{
+                        Spacer().frame(height: 10)
+                        FirebaseImage(id: subscription.imgName ?? "")
+                            .scaleEffect(x: 1.1, y: 1.1, anchor: .center)
+                    }
+                }
+                
                 SubscriptionSummaryView(subscription: subscription).cardify()
                 if subscription.dateNotice != nil{
                     SubscriptionScheduleView(subscription : subscription).cardify()
@@ -48,8 +66,12 @@ struct SubscriptionDetailView : View{
                     SubscriptionLinkView(title: "공고 파일 보기", link : subscription.documentLink!).cardify(.small)
                 }
                 
-            }.listRowInsets(EdgeInsets())
             }
+            .listRowInsets(EdgeInsets())
+            
+
+            }
+        .foregroundColor(.black)
         .navigationBarTitle("")
         .navigationBarHidden(true)
 
@@ -90,8 +112,10 @@ struct SubscriptionHeadView: View{
                     .padding([.top], self.descriptionAPaddingTop)
                 HStack{
                     Text(subscription.buildingType)
-                    Text("|")
-                    Text(subscription.subscriptionType)
+                    if subscription.subscriptionType.count > 1{
+                        Text("|")
+                        Text(subscription.subscriptionType)
+                    }
                 }
                     .adjustFont(fontStyle:self.descriptionBFontStyle)
                     .padding([.top], self.descriptionBPaddingTop)
@@ -123,6 +147,7 @@ struct SubscriptionSummaryView: View{
             HStack{
                 // 앞은 cardify 값만큼만
                 VStack{
+                    
                     Group{
                         if (subscription.startDate != nil)&&(subscription.endDate != nil){
                             SmallRowView(header: "접수", value: subscription.startDate!.getString()+" ~ "+subscription.endDate!.getString())
@@ -167,6 +192,7 @@ struct SubscriptionScheduleView: View{
     let sectionTitleFontStyle = CustomFontStyle.sectionTitle
     let descriptionFontStyle = CustomFontStyle.sectionDescription
     let descriptionPaddingTop = CGFloat(16)
+    let descriptionNotApartFontStyle = CustomFontStyle.sectionSmallDescriptionA
     
     var subscription: HomeGuideModel.Subscription
     var body : some View{
@@ -176,36 +202,72 @@ struct SubscriptionScheduleView: View{
                 .adjustFont(fontStyle: self.sectionTitleFontStyle)
                 Spacer()
             }
-            VStack{
-                ScheduleRowView(isTitle:true, rowTitle:"", rowValue1:"해당지역", rowValue2:"기타지역")
-                Divider()
-                Group{
-                    if subscription.hasSpecialSupply{
-                        ScheduleRowView(rowTitle:"특별공급",
-                                        rowValue1:subscription.dateSpecialSupplyNear!.getString(),
-                                        rowValue2:subscription.dateSpecialSupplyOther!.getString()
+            Group{
+                if (subscription.buildingType == "아파트")&&(subscription.noRank == false){
+                VStack{
+                    ScheduleRowView(isTitle:true, rowTitle:"", rowValue1:"해당지역", rowValue2:"기타지역")
+                    Divider()
+                    Group{
+                        if subscription.dateNotice != nil{
+                            ScheduleRowView(isBig: true, rowTitle: "공고일", rowValue1: subscription.dateNotice!.getString())
+                            Divider()
+                        }
+
+                    }
+                    Group{
+                        if subscription.hasSpecialSupply{
+                            ScheduleRowView(rowTitle:"특별공급",
+                                            rowValue1:subscription.dateSpecialSupplyNear!.getString(),
+                                            rowValue2:subscription.dateSpecialSupplyOther!.getString()
+                            )
+                            Divider()
+                        }
+                    }
+                    ScheduleRowView(rowTitle:"1순위",
+                                    rowValue1:subscription.dateFirstNear!.getString(),
+                                    rowValue2:subscription.dateFirstOther!.getString()
+                    )
+                    Divider()
+                    ScheduleRowView(rowTitle:"2순위",
+                                    rowValue1:subscription.dateSecondNear!.getString(),
+                                    rowValue2:subscription.dateSecondOther!.getString()
+                    )
+                    Divider()
+                    if subscription.dateAnnounce != nil{
+                        ScheduleRowView(isBig:true, rowTitle:"당첨자 발표일",
+                                        rowValue1:subscription.dateAnnounce!.getString()
                         )
-                        Divider()
+
                     }
                 }
-                ScheduleRowView(rowTitle:"1순위",
-                                rowValue1:subscription.dateFirstNear!.getString(),
-                                rowValue2:subscription.dateFirstOther!.getString()
-                )
-                Divider()
-                ScheduleRowView(rowTitle:"2순위",
-                                rowValue1:subscription.dateSecondNear!.getString(),
-                                rowValue2:subscription.dateSecondOther!.getString()
-                )
-                Divider()
-                if subscription.dateAnnounce != nil{
-                    ScheduleRowView(isBig:true, rowTitle:"당첨자 발표일",
-                                    rowValue1:subscription.dateAnnounce!.getString()
-                    )
+            }else{
+                VStack{
+                    if subscription.dateNotice != nil{
+                        SmallRowView(header: "모집공고일", value: subscription.dateNotice!.getString())
+                    }
+                    if subscription.dateSecondOther != nil{
+                        SmallRowView(header: "청약접수", value : subscription.dateSecondOther!.getString())
+                    }
+                    if subscription.dateAnnounce != nil{
+                        SmallRowView(header: "당첨자 발표일", value: subscription.dateAnnounce!.getString())
+                    }
+                    if subscription.dateContract != nil{
+                        SmallRowView(header:"계약일", value : subscription.dateContract!.getString())
+                    }
+                }.adjustFont(fontStyle:self.descriptionNotApartFontStyle)
+            }
+            }
+            .padding([.top],self.descriptionPaddingTop)
+            Group{
+                if subscription.noRankNotSpecified == true{
+                    HStack{
+                        Spacer()
+                        Text("상세 정보는 업데이트 예정이에요.")
+                        Spacer()
+                    }.adjustFont(fontStyle:self.descriptionFontStyle)
 
                 }
             }
-            .padding([.top],self.descriptionPaddingTop)
         }
     }
 }
@@ -279,6 +341,14 @@ struct SubscriptionPriceView : View{
     let sentenceFontStyle = CustomFontStyle.sectionDescription
     let sentenceSmallPaddingToTop = CGFloat(10)
     let sentenceBigPaddingToTop = CGFloat(20)
+    let subtitlePaddingTop = CGFloat(20)
+    let columnCount = 4
+    let cellHeight = CGFloat(50)
+    var gridHeight: CGFloat{
+        let rowCount =  Int(ceil(Double(subscription.typeList!.count)/Double(self.columnCount)))
+        return CGFloat(rowCount) * self.cellHeight
+    }
+    
     @State var chosenHomeType : HomeGuideModel.HomeType?
     @ObservedObject var modelView: HomeModelView
     var body: some View{
@@ -302,30 +372,48 @@ struct SubscriptionPriceView : View{
                     self.modelView.chooseHomeType(subscription: self.subscription, homeType: homeType)
                 }
             }
-            .frame(height: 100)
+            .frame(height: self.gridHeight)
             .padding([.top],self.descriptionPaddingTop)
             Divider()
             Group{
                 if self.subscription.chosenHomeType != nil{
+                    Group{
+                        if self.subscription.chosenHomeType!.typeImgName != nil{
+                            VStack{
+                                Spacer().frame(height: 10)
+                                FirebaseImage(id: self.subscription.chosenHomeType!.typeImgName ?? "")
+                                    .scaleEffect(x: 1.1, y: 1.1, anchor: .center)
+                            }
+                        }
+                    }
+                }
+            }
+            Group{
+                if self.subscription.chosenHomeType != nil{
                     VStack{
+                        
                         HStack{
                             Text(self.subscription.chosenHomeType!.title+"형")
+                                .padding([.top], self.subtitlePaddingTop)
                             Spacer()
                         }
                         //상세 정보
-                        VStack{
-                            HStack{
-                                Text("면적")
-                                Spacer()
+                        Group{
+                            if subscription.noRank == false{
+                                VStack{
+                                    HStack{
+                                        Text("면적")
+                                        Spacer()
+                                    }
+                                    .adjustFont(fontStyle:self.sectionTitleFontStyle)
+                                    .padding([.bottom], self.sectionTitleBottomPadding)
+                                    VStack{
+                                        SmallRowView(header:"넓이(미터)" , value:String(self.subscription.chosenHomeType!.size.inMeter) + " m²")
+                                        SmallRowView(header:"넓이(평형", value: String(self.subscription.chosenHomeType!.size.inPy) + " 평")
+                                    }
+                                    .adjustFont(fontStyle:self.smallDescriptionFontStyle)
+                                }
                             }
-                            .adjustFont(fontStyle:self.sectionTitleFontStyle)
-                            .padding([.bottom], self.sectionTitleBottomPadding)
-                            VStack{
-                                SmallRowView(header:"넓이(미터)" , value:String(self.subscription.chosenHomeType!.size.inMeter) + " m²")
-                                SmallRowView(header:"넓이(평형", value: String(self.subscription.chosenHomeType!.size.inPy) + " 평")
-                            }
-                            .adjustFont(fontStyle:self.smallDescriptionFontStyle)
-                            
                         }
                         .padding([.top], self.sectionPaddingTop)
                         VStack{
@@ -345,7 +433,7 @@ struct SubscriptionPriceView : View{
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
                         }.padding([.top], self.sectionPaddingTop)
-                        if subscription.priceDidSet{
+                        if (subscription.priceDidSet)&&(!subscription.noRankNotSpecified){
                             VStack{
                                 HStack{
                                     Text("가격")
@@ -383,11 +471,19 @@ struct SubscriptionPriceView : View{
                                     HStack{
                                         VStack{
                                             HStack{
+                                                Text("총 가격")
+                                                Text("\(self.subscription.chosenHomeType!.totalPrice.inText) ").foregroundColor(Color.coralRed)
+                                                Text("중에")
+                                                Spacer()
+                                            }.adjustFont(fontStyle: self.sentenceFontStyle)
+                                            HStack{
                                                 Text("청약시에 필요한 돈은")
                                                 Text("\(self.subscription.chosenHomeType!.needMoneyFirst)").foregroundColor(Color.coralRed)
                                                 Text("이고")
                                                 Spacer()
-                                            }.adjustFont(fontStyle: self.sentenceFontStyle)
+                                            }
+                                            .adjustFont(fontStyle: self.sentenceFontStyle)
+                                            .padding([.top], self.sentenceBigPaddingToTop)
                                             HStack{
                                                 VStack{
                                                     HStack{
@@ -398,7 +494,7 @@ struct SubscriptionPriceView : View{
                                                     Group{
                                                         if self.subscription.chosenHomeType!.middlePriceLoanable{
                                                             HStack{
-                                                            Text("중도금 대출 가능 여부에 따라 달라질 수 있습니다.")
+                                                            Text("중도금 대출이 가능하니 필요자금은 더 줄어들 수 있어요.")
                                                                 Spacer()
                                                             }
 
@@ -409,20 +505,27 @@ struct SubscriptionPriceView : View{
                                                 Spacer()
                                             }
                                             .foregroundColor(Color.lightGrey)
-                                            HStack{
-                                                Text("입주 시점에는")
-                                                
-                                                    
-                                                Text("\(self.subscription.chosenHomeType!.needMoneyFinal)").foregroundColor(Color.coralRed)
-                                                Text("이 더 필요해요.")
-                                                Spacer()
+                                            Group{
+                                                if self.subscription.chosenHomeType!.needMoneyFinal == "0.0억 원"{
+                                                    HStack{
+                                                        Text("입주 시점에는 더 필요하지 않아요.")
+                                                        Spacer()
+                                                    }
+                                                }else{
+                                                    HStack{
+                                                        Text("입주 시점에는")
+                                                        Text("\(self.subscription.chosenHomeType!.needMoneyFinal)").foregroundColor(Color.coralRed)
+                                                        Text("이 더 필요해요.")
+                                                        Spacer()
+                                                    }
+                                                }
                                             }
                                             .adjustFont(fontStyle: self.sentenceFontStyle)
                                             .padding([.top], self.sentenceBigPaddingToTop)
                                             HStack{
                                                 VStack(alignment: .leading){
                                                    Text("(B) 잔금 - 대출 가능 금액")
-                                                   Text("대출 가능 금액은 무주택자 기준으로 개인에 따라 차이가 있을 수 있습니다.")
+                                                   Text("대출 가능 금액은 무주택자 기준이며, 개인에 따라 달라질 수 있어요.")
                                                }
                                                .foregroundColor(Color.lightGrey)
                                                 .padding([.top], self.sentenceSmallPaddingToTop)

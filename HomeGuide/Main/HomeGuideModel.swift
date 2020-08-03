@@ -23,6 +23,8 @@ struct HomeGuideModel{
     // MARK : - For Filtering
     var choosenFilterCategory: FilterCategory?
 
+    // 한번이라도 filter가 변경되어야 새로 쿼리를 날린다.
+    var isFilterChanged : Bool = false
     
     struct FilterCategory: Identifiable{
         var id : Int
@@ -34,6 +36,16 @@ struct HomeGuideModel{
         var optionList : Array<FilterOption>?
         var filterRange : FilterRange?
         var choosenFilterRange: FilterRange?
+        var isChecked : Bool?
+        var multiSelectAble : Bool
+        
+        mutating func chooseAllOptions(){
+            if self.optionList != nil{
+                for (index,_) in self.optionList!.enumerated(){
+                    self.optionList![index].choosen = true
+                }
+            }
+        }
         func isLastOption(_ selectedOption: HomeGuideModel.FilterOption) -> Bool{
             if let optionList_ = optionList{
                 var choosenCount = 0
@@ -79,12 +91,51 @@ struct HomeGuideModel{
                         }
                     }
                 }
-                choosenString = firstString + " 외 \(choosenCounter - 1)"
+                if choosenCounter == 1{
+                    choosenString = firstString
+                }else{
+                    choosenString = firstString + " 외 \(choosenCounter - 1)"
+                }
+                if isAllChosen{
+                    choosenString = "모든 " + self.titleDisplay
+                }
                 return choosenString
             }else{
                 return self.titleDisplay
             }
 
+        }
+        // Computed variables
+        var chosenOptions:Array<String>?{
+            if self.optionList != nil{
+                var resultList = [String]()
+                for option in self.optionList!{
+                    if option.choosen{
+                        resultList.append(option.value)
+                    }
+                }
+                return resultList
+            }else{
+                return nil
+            }
+        }
+        var isAllChosen: Bool{
+            if (self.chosenOptions != nil){
+                if self.optionList != nil{
+                    if self.chosenOptions!.count == self.optionList!.count {
+                        return true
+                    }
+                }
+            }
+                return false
+        }
+        var isBigQuery : Bool{
+            if self.chosenOptions != nil{
+                if self.chosenOptions!.count > 10{
+                    return true
+                }
+            }
+            return false
         }
 
         
@@ -92,6 +143,7 @@ struct HomeGuideModel{
             self.id = id
             titleDisplay = dictionary["titleDisplay"] as! String
             titleQuery = dictionary["titleQuery"] as! String
+            multiSelectAble = dictionary["multiSelectAble"] as! Bool
             var tempList = [FilterOption]()
 
             if (dictionary["type"] as! String ) == "discrete"{
@@ -101,11 +153,22 @@ struct HomeGuideModel{
                     tempList.append(FilterOption(id: filterId, value : option))
                     filterId += 1
                 }
-            }else{
+                if multiSelectAble{
+                    for (index,value) in tempList.enumerated(){
+                        tempList[index].choosen = false
+                    }
+                    for index in 0 ..< (dictionary["preChoose"] as! Int){
+                        tempList[index].choosen = true
+                    }
+                }
+            }else if(dictionary["type"] as! String ) == "range"{
                 dataType = .range
                 filterRange = FilterRange(array : (dictionary["optionRange"] as! Array<Double>), interval : dictionary["optionInterval"] as! Double)
-            
+            }else{
+                dataType = .bool
+                isChecked = false
             }
+            
             optionList = tempList
         }
     }
@@ -123,6 +186,7 @@ struct HomeGuideModel{
     enum DataStyle {
         case discrete
         case range
+        case bool
     }
     
     struct FilterOption:Identifiable, Hashable{
@@ -146,10 +210,14 @@ struct HomeGuideModel{
     }
     
     mutating func snapshotsTosubscriptions(snapshots:[QueryDocumentSnapshot]){
+        
         for snapshot in snapshots{
             subscriptions.append(Subscription(snapshot: snapshot))
         }
         subscriptions = subscriptions.sorted(by: {$0.dateClose! < $1.dateClose!})
+    }
+    mutating func clearSubscriptions(){
+        subscriptions = [Subscription]()
     }
     mutating func snapshotsToGuides(snapshots:[QueryDocumentSnapshot]){
         for snapshot in snapshots{
@@ -197,10 +265,14 @@ struct HomeGuideModel{
         var endDate: Date?
         var dateLeftInString : String?
         var dateClose : Date?
+        var showLabel : Bool
+        var showHighlightLabel : Bool
         var chosenHomeType: HomeType?
+        var noRankNotSpecified : Bool
+        var imgName : String?
         var iconName: String {
             if (self.buildingType == "아파트") || (self.buildingType == "apt"){
-                let number = Int.random(in: 1..<4)
+                let number = Int.random(in: 1..<3)
                 let imgName = "apartIcon" + String(number)
                 return imgName
             }else{
@@ -216,6 +288,34 @@ struct HomeGuideModel{
                 }
             }
             return tempTotalSupply
+        }
+        var isNew:Bool{
+            let currentDate = Date()
+            if let dateNoticeSet = self.dateNotice {
+                let interval = currentDate - dateNoticeSet
+                
+                let cal = Calendar.current
+                
+                let currentMonth = cal.component(.month, from: currentDate)
+                let currentWeek = cal.component(.weekOfYear, from: currentDate)
+                let currentDay = cal.component(.day, from: currentDate)
+                
+                
+                let targetMonth = cal.component(.month, from: dateNoticeSet)
+                let targetWeek = cal.component(.weekOfYear, from : dateNoticeSet)
+                let targetDay = cal.component(.day, from:dateNoticeSet)
+                let dayDiff = currentDay -  targetDay
+                let monthDiff = currentMonth - targetMonth
+                print(dayDiff)
+                print("!!!!!!!!!!!!!!!isNew!!!!!")
+                // TODO: 날짜 비교의 좋은 예 - 전체 코드를 아래 처럼 수정하자
+                let components = Calendar.current.dateComponents([.year, .month, .day], from: dateNoticeSet, to: Date())
+                if (components.day! < 3) {
+                    return true
+                }
+                
+            }
+            return false
         }
 
         
@@ -250,6 +350,10 @@ struct HomeGuideModel{
             documentLink = (snapshotValue["documentLink"] as? String)
             priceDidSet = (snapshotValue["priceDidSet"] as! Bool)
             typeList = [HomeType]()
+            noRankNotSpecified = (snapshotValue["noRankNotSpecified"] as? Bool) ?? true
+            showLabel = false
+            showHighlightLabel = false
+            imgName = snapshotValue["imgName"] as? String
             if let tempTypeList = snapshotValue["typeList"]{
                 for (index, element) in (tempTypeList as? Array<Any>)!.enumerated(){
                     // TODO : - Array의 Index를 넣어주세요
@@ -267,11 +371,7 @@ struct HomeGuideModel{
             lowestPrice = getLowestPrice()
             highestPrice = getHighestPrice()
 
-            let closestDateTuple:(dateLeftString : String?, dateClose: Date?) = getDateLeftString()
-            dateLeftInString = closestDateTuple.dateLeftString
-            dateClose = closestDateTuple.dateClose
-//            startDate = getStartDate()
-//            endDate = getEndDate()
+            (dateLeftInString, dateClose, showLabel,showHighlightLabel) = getDateLeftString()
         }
         
         func getEndDate()-> Date{
@@ -342,46 +442,63 @@ struct HomeGuideModel{
             }
             
         }
-        func getDateLeftString() -> (dateLeftString:String?, dateClose : Date?){
+        func getDateLeftString() -> (String,Date,Bool,Bool){
             // MARK : Nil error 주의
             var dateLeftString : String?
             var dateCloseCandidate : Date?
             
             if self.hasSpecialSupply{
                 if self.notPassed(dateSpecialSupplyNear!){
-                   dateLeftString = getDateLeftString(from: dateSpecialSupplyNear!)
+                    var showLabel = false
+                    var showHighlightLabel = false
+                    (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSpecialSupplyNear!, with:"특공")
                     dateCloseCandidate = dateSpecialSupplyNear!
-                    return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                    return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
                 }
                 if self.notPassed(dateSpecialSupplyOther!){
-                    dateLeftString = getDateLeftString(from: dateSpecialSupplyOther!)
+                    var showLabel = false
+                    var showHighlightLabel = false
+                    (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSpecialSupplyOther!, with:"특공")
                     dateCloseCandidate = dateSpecialSupplyOther!
-                    return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                    return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
                 }
             }
             if let _ = dateFirstNear, self.notPassed(dateFirstNear!){
-                dateLeftString = getDateLeftString(from: dateFirstNear!)
+                var showLabel = false
+                var showHighlightLabel = false
+                (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateFirstNear!, with:"1순위")
                 dateCloseCandidate = dateFirstNear!
-                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
             if let _ = dateFirstOther,  self.notPassed(dateFirstOther!){
-                dateLeftString = getDateLeftString(from: dateFirstOther!)
+                var showLabel = false
+                var showHighlightLabel = false
+                (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateFirstOther!, with:"1순위")
                 dateCloseCandidate = dateFirstOther!
-                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
             if let _ = dateSecondNear, self.notPassed(dateSecondNear!){
-                dateLeftString = getDateLeftString(from: dateSecondNear!)
+                var showLabel = false
+                var showHighlightLabel = false
+                (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSecondNear!, with:"2순위")
                 dateCloseCandidate = dateSecondNear!
-                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
             if let _ = dateSecondOther, self.notPassed(dateSecondOther!){
-                dateLeftString = getDateLeftString(from: dateSecondOther!)
+                var showLabel = false
+                var showHighlightLabel = false
+                if (self.noRank == true)||(self.buildingType != "아파트"){
+                    (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSecondOther!, with:"접수")
+                }else{
+                    (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSecondOther!, with:"2순위")
+                }
+
                 dateCloseCandidate = dateSecondOther!
-                return (dateLeftString:dateLeftString, dateClose : dateCloseCandidate)
+                return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
-           return (dateLeftString:"", dateClose : dateSecondOther!)
+            return ("", dateSecondOther!, false,false)
         }
-        func getDateLeftString(from targetDate:Date) -> String{
+        func getDateLeftString(from targetDate:Date, with dateString: String) -> (String,Bool,Bool){
             let currentDate = Date()
             let interval = targetDate - currentDate
             
@@ -401,31 +518,26 @@ struct HomeGuideModel{
             
             var resultString = ""
             // 같은 달 안 인가?
-            
+            var showLabel = false
+            var showHighlightLabel = false
             if let intervalDay = interval.day,(intervalDay < 1)&&(dayDiff == 0){
-                resultString = "TODAY"
-            }else if (targetMonth == currentMonth)&&(dayDiff < 7){
-                resultString = "D-\(dayDiff)"
+                resultString = "\(dateString) TODAY"
+                showLabel = true
+                showHighlightLabel = true
+            }else if (targetMonth == currentMonth)&&(dayDiff < 3){
+                resultString = "\(dateString) D-\(dayDiff)"
+                showLabel = true
+                showHighlightLabel = true
+            }else if (targetMonth == currentMonth)&&(dayDiff < 5){
+                resultString = "\(dateString) D-\(dayDiff)"
+                showLabel = true
+                showHighlightLabel = false
             }else{
                 resultString = "\(targetMonth)/\(targetDay)"
+                showLabel = false
+                showHighlightLabel = false
             }
-
-//            var string = ""
-//            if targetWeek > currentWeek{
-//                if ((weekDiff <= 4) || (monthDiff == 0)){
-//                    string = "\(weekDiff)주 후"
-//                }else{
-//                    string = "\(monthDiff)개월 뒤"
-//                }
-//            }else{
-//
-//                if dayDiff == 0 {
-//                    string = "오늘"
-//                }else{
-//                    string = "D - \(dayDiff)"
-//                }
-//            }
-            return resultString
+            return (resultString, showLabel, showHighlightLabel)
         }
         func isSameDay(date1: Date, date2: Date) -> Bool {
             let diff = Calendar.current.dateComponents([.day], from: date1, to: date2)
@@ -508,6 +620,7 @@ struct HomeGuideModel{
         var loanLimit : Price
         var size : Size
         var isChoosen:Bool = false
+        var typeImgName: String?
         init(idNum : Int, dictionary: Dictionary<String, Any>){
             id = "homeType_" + String(idNum)
             title = (dictionary["title"] as? String)!
@@ -523,7 +636,10 @@ struct HomeGuideModel{
             needMoneyFinal = (dictionary["needMoneyFinal"] as? String) ?? "0원"
             loanLimit = Price(inText: (dictionary["loanLimitText"] as? String) ?? "0원", inNumeric: (dictionary["loanLimitNumeric"] as? Int) ?? 0)
             size = Size(inMeter: (dictionary["sizeInMeter"] as? NSNumber)?.floatValue ?? 0, inPy: (dictionary["sizeInPy"] as? NSNumber)?.floatValue ?? 0)
+            typeImgName = dictionary["typeImgName"] as? String
         }
+        
+        
     }
     struct Price{
         var inText : String

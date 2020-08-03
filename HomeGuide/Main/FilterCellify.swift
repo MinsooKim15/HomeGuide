@@ -69,11 +69,13 @@ struct FilterCellify: AnimatableModifier{
         func body(content: Content) -> some View{
             GeometryReader{geometry in
                 ZStack{
-                    RoundedRectangle(cornerRadius:self.cornerRadius)
+//                    RoundedRectangle(cornerRadius:self.cornerRadius)
+                    Rectangle()
                         .stroke(self.strokeColor, lineWidth:self.lineWidth)
                     content.lineLimit(1).foregroundColor(self.strokeColor)
                 }
-                .frame(width: geometry.size.width * self.targetWidthRatio, height: geometry.size.height * self.targetHeightRatio)
+                .frame(width: geometry.size.width, height: geometry.size.height)
+//                .frame(width: geometry.size.width * self.targetWidthRatio, height: geometry.size.height * self.targetHeightRatio)
                 .frame(alignment:.center)
             }
     }
