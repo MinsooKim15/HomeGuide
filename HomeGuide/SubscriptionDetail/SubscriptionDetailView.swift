@@ -24,6 +24,7 @@ struct SubscriptionDetailView : View{
                         Button(action:{self.presentationMode.wrappedValue.dismiss()} ){
                             return Image(systemName: "chevron.left").foregroundColor(.coralRed)
                         }
+//                        .frame(width:30, height:30)
                         .padding([.leading], self.navBarPaddingToLead)
                         .padding([.top], self.navBarPaddingToTop)
                         Spacer()
@@ -54,7 +55,8 @@ struct SubscriptionDetailView : View{
                 if subscription.dateNotice != nil{
                     SubscriptionScheduleView(subscription : subscription).cardify()
                 }
-                SubscriptionPriceView(subscription : subscription, modelView: self.modelView).cardify()
+                SubscriptionPriceView(subscription : subscription, modelView: self.modelView)
+                    .cardify(.noTrail)
                 if subscription.naverLink != nil{
                     SubscriptionLinkView(title: "네이버에서 보기", link : subscription.naverLink!).cardify(.small)
                 }
@@ -281,6 +283,7 @@ struct ScheduleRowView: View{
     var cellWidth = CGFloat(10)
     var paddingBottom = CGFloat(8)
     var paddingTop = CGFloat(8)
+    
     var fontStyle = CustomFontStyle.sectionSmallDescriptionA
     var titleColor:Color{
         if isTitle{
@@ -348,6 +351,8 @@ struct SubscriptionPriceView : View{
         let rowCount =  Int(ceil(Double(subscription.typeList!.count)/Double(self.columnCount)))
         return CGFloat(rowCount) * self.cellHeight
     }
+    // 사진 때문에 Cardify가 안먹어서 noTrail설정하고, 여기서 직접 Trail 적용함.
+    var paddingToTrail = CGFloat(20)
     
     @State var chosenHomeType : HomeGuideModel.HomeType?
     @ObservedObject var modelView: HomeModelView
@@ -374,13 +379,15 @@ struct SubscriptionPriceView : View{
             }
             .frame(height: self.gridHeight)
             .padding([.top],self.descriptionPaddingTop)
+            .padding([.trailing], self.paddingToTrail)
+            .padding([.bottom], 20)
             Divider()
             Group{
                 if self.subscription.chosenHomeType != nil{
                     Group{
                         if self.subscription.chosenHomeType!.typeImgName != nil{
                             VStack{
-                                Spacer().frame(height: 10)
+                                Spacer().frame(height: 20)
                                 FirebaseImage(id: self.subscription.chosenHomeType!.typeImgName ?? "")
                                     .scaleEffect(x: 1.1, y: 1.1, anchor: .center)
                             }
@@ -391,7 +398,6 @@ struct SubscriptionPriceView : View{
             Group{
                 if self.subscription.chosenHomeType != nil{
                     VStack{
-                        
                         HStack{
                             Text(self.subscription.chosenHomeType!.title+"형")
                                 .padding([.top], self.subtitlePaddingTop)
@@ -411,11 +417,13 @@ struct SubscriptionPriceView : View{
                                         SmallRowView(header:"넓이(미터)" , value:String(self.subscription.chosenHomeType!.size.inMeter) + " m²")
                                         SmallRowView(header:"넓이(평형", value: String(self.subscription.chosenHomeType!.size.inPy) + " 평")
                                     }
+                                    
                                     .adjustFont(fontStyle:self.smallDescriptionFontStyle)
                                 }
                             }
                         }
                         .padding([.top], self.sectionPaddingTop)
+                        .padding([.trailing], self.paddingToTrail)
                         VStack{
                             HStack{
                                 Text("공급세대")
@@ -432,7 +440,9 @@ struct SubscriptionPriceView : View{
                                 SmallRowView(header:"총 세대수", value:String(self.subscription.chosenHomeType!.totalSupply) + " 세대")
                             }
                             .adjustFont(fontStyle:self.smallDescriptionFontStyle)
-                        }.padding([.top], self.sectionPaddingTop)
+                        }
+                        .padding([.top], self.sectionPaddingTop)
+                        .padding([.trailing], self.paddingToTrail)
                         if (subscription.priceDidSet)&&(!subscription.noRankNotSpecified){
                             VStack{
                                 HStack{
@@ -467,7 +477,9 @@ struct SubscriptionPriceView : View{
                                             row3: "대출 가능 금액",
                                             row3_2 : "\(self.subscription.chosenHomeType!.loanLimit.inText)"
                                         )
-                                    }.frame(minHeight: 240)
+                                    }
+                                    .frame(minHeight: 240)
+                                    .padding([.trailing], self.paddingToTrail)
                                     HStack{
                                         VStack{
                                             HStack{
@@ -506,7 +518,7 @@ struct SubscriptionPriceView : View{
                                             }
                                             .foregroundColor(Color.lightGrey)
                                             Group{
-                                                if self.subscription.chosenHomeType!.needMoneyFinal == "0.0억 원"{
+                                                if ((self.subscription.chosenHomeType!.needMoneyFinal == "0.0억 원")||(self.subscription.chosenHomeType!.needMoneyFinal == "0 억원")){
                                                     HStack{
                                                         Text("입주 시점에는 더 필요하지 않아요.")
                                                         Spacer()
@@ -535,9 +547,9 @@ struct SubscriptionPriceView : View{
                                         Spacer()
                                     }.padding([.top], self.priceSentencePaddingTop)
                                 }.adjustFont(fontStyle:self.smallDescriptionFontStyle)
-                                
-
-                            }.padding([.top], self.sectionPaddingTop)
+                            }
+                            .padding([.top], self.sectionPaddingTop)
+                            
                         }
 
                     }

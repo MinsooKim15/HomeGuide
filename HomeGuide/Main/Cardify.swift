@@ -23,9 +23,10 @@ struct Cardify: AnimatableModifier{
             return CGFloat(0)
         case .body:
             return CGFloat(40)
+        case .noTrail:
+            return CGFloat(40)
         case .small:
             return CGFloat(12)
-
         }
     }
     var paddingBottom:CGFloat{
@@ -34,11 +35,20 @@ struct Cardify: AnimatableModifier{
             return CGFloat(0)
         case .body:
             return CGFloat(40)
+        case .noTrail:
+            return CGFloat(40)
         case .small:
             return CGFloat(12)
         }
     }
-    var paddingTrail = CGFloat(20)
+    var paddingTrail:CGFloat{
+        switch style{
+        case .noTrail:
+            return CGFloat(0)
+        default:
+            return CGFloat(20)
+        }
+    }
     var style : CardifyStyle
     func body(content: Content) -> some View{
         VStack{
@@ -64,4 +74,5 @@ enum CardifyStyle{
     case head
     case body
     case small
+    case noTrail
 }

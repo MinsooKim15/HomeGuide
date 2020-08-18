@@ -69,7 +69,7 @@ struct FirebaseImage : View {
             if self.image != nil{
                 Image(uiImage: self.image!)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: .infinity)
                     .clipped()
             }

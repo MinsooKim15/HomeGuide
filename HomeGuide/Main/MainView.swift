@@ -11,6 +11,7 @@ import SwiftUI
 struct MainView: View {
     @ObservedObject var modelView : HomeModelView
     @State var navBarHidden: Bool = true
+    var anonymousAuth = AnonymousAuth()
     // 여기서 배경색 컨트롤
     let backgroundColorView: some View = Color(hex:"F0F0F0")
     
