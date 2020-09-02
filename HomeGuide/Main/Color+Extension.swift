@@ -21,4 +21,7 @@ extension Color {
     public static var lightGrey:Color{
         return Color(hex:"B3ABAB")
     }
+    public static var lightOrange:Color{
+        return Color(hex:"FFB478")
+    }
 }

@@ -16,7 +16,7 @@ struct HomeGuideModel{
     var subscriptions : Array<Subscription>
     var guides : Array<Guide>
     var filters : Array<FilterCategory>
-    
+    var showHomeKeyPopUp: Bool = false
     // MARK: - For UI
     var isFilterOpen : Bool = false
     
@@ -233,7 +233,6 @@ struct HomeGuideModel{
         }
     }
     
-    
     struct Subscription : Identifiable{
         var id : String
         var title : String
@@ -288,6 +287,9 @@ struct HomeGuideModel{
                 }
             }
             return tempTotalSupply
+        }
+        var firstOtherDidNotPassed: Bool{
+            self.notPassed(self.dateFirstOther!) ?? false
         }
         var isNew:Bool{
             let currentDate = Date()
@@ -442,13 +444,15 @@ struct HomeGuideModel{
             }
             
         }
+        
         func getDateLeftString() -> (String,Date,Bool,Bool){
             // MARK : Nil error 주의
             var dateLeftString : String?
             var dateCloseCandidate : Date?
-            
+            print(self.title)
             if self.hasSpecialSupply{
                 if self.notPassed(dateSpecialSupplyNear!){
+                    print("특공")
                     var showLabel = false
                     var showHighlightLabel = false
                     (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSpecialSupplyNear!, with:"특공")
@@ -456,6 +460,7 @@ struct HomeGuideModel{
                     return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
                 }
                 if self.notPassed(dateSpecialSupplyOther!){
+                    print("특공기타")
                     var showLabel = false
                     var showHighlightLabel = false
                     (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSpecialSupplyOther!, with:"특공")
@@ -464,6 +469,7 @@ struct HomeGuideModel{
                 }
             }
             if let _ = dateFirstNear, self.notPassed(dateFirstNear!){
+                print("1순위해당")
                 var showLabel = false
                 var showHighlightLabel = false
                 (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateFirstNear!, with:"1순위")
@@ -471,6 +477,7 @@ struct HomeGuideModel{
                 return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
             if let _ = dateFirstOther,  self.notPassed(dateFirstOther!){
+                print("1순위 기타")
                 var showLabel = false
                 var showHighlightLabel = false
                 (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateFirstOther!, with:"1순위")
@@ -478,6 +485,7 @@ struct HomeGuideModel{
                 return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
             if let _ = dateSecondNear, self.notPassed(dateSecondNear!){
+                print("2순위해당")
                 var showLabel = false
                 var showHighlightLabel = false
                 (dateLeftString, showLabel, showHighlightLabel) = getDateLeftString(from: dateSecondNear!, with:"2순위")
@@ -485,6 +493,7 @@ struct HomeGuideModel{
                 return (dateLeftString ?? "", dateCloseCandidate!, showLabel, showHighlightLabel)
             }
             if let _ = dateSecondOther, self.notPassed(dateSecondOther!){
+                print("2순위기타")
                 var showLabel = false
                 var showHighlightLabel = false
                 if (self.noRank == true)||(self.buildingType != "아파트"){
@@ -550,10 +559,12 @@ struct HomeGuideModel{
         func notPassed(_ targetDate:Date)-> Bool{
             let currentDate = Date()
             if targetDate >= currentDate{
+                print("같은 날임")
                 return true
             }else{
 //                 당일일 수도 있음
                 if isSameDay(date1: targetDate, date2: currentDate){
+                    print("같은 날임")
                     return true
                 }
                 return false
@@ -604,7 +615,6 @@ struct HomeGuideModel{
         static func == (lhs: HomeGuideModel.HomeType, rhs: HomeGuideModel.HomeType) -> Bool {
             return lhs.title == rhs.title
         }
-        
         var id : String
         var title : String
         var generalSupply : Int?
@@ -620,7 +630,12 @@ struct HomeGuideModel{
         var loanLimit : Price
         var size : Size
         var isChoosen:Bool = false
+        var homeTypeCode : String
         var typeImgName: String?
+        var firstCompetitionRate : CompetitionRate?
+        var secondCompetitionRate : CompetitionRate?
+        var winningScore : WinningScore?
+        var estimatedScore : Int?
         init(idNum : Int, dictionary: Dictionary<String, Any>){
             id = "homeType_" + String(idNum)
             title = (dictionary["title"] as? String)!
@@ -637,6 +652,17 @@ struct HomeGuideModel{
             loanLimit = Price(inText: (dictionary["loanLimitText"] as? String) ?? "0원", inNumeric: (dictionary["loanLimitNumeric"] as? Int) ?? 0)
             size = Size(inMeter: (dictionary["sizeInMeter"] as? NSNumber)?.floatValue ?? 0, inPy: (dictionary["sizeInPy"] as? NSNumber)?.floatValue ?? 0)
             typeImgName = dictionary["typeImgName"] as? String
+            homeTypeCode = dictionary["homeTypeCode"] as! String
+            if let firstCompetitionRateDictionary = dictionary["firstCompetitionRate"] as? Dictionary<String,Any>{
+                firstCompetitionRate = CompetitionRate(dictionary:firstCompetitionRateDictionary)
+            }
+            if let secondCompetitionRateDictionary = dictionary["secondCompetitionRate"] as? Dictionary<String,Any>{
+                secondCompetitionRate = CompetitionRate(dictionary:secondCompetitionRateDictionary)
+            }
+            if let winningScoreDictionary = dictionary["winningScore"] as? Dictionary<String,Any>{
+                winningScore = WinningScore(dictionary:winningScoreDictionary)
+            }
+            estimatedScore = dictionary["estimatedScore"] as? Int
         }
         
         

@@ -12,71 +12,80 @@ struct SubscriptionDetailView : View{
     var subscription: HomeGuideModel.Subscription
     @ObservedObject var modelView : HomeModelView
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var session: SessionStore
     let navBarPaddingToLead = CGFloat(20)
     let navBarPaddingToTop = CGFloat(20)
     let navBarMaxHeight = CGFloat(50)
     var body: some View{
-        VStack(spacing:0){
-            ZStack{
-                Color.white.edgesIgnoringSafeArea(.all)
+        ZStack{
             VStack(spacing:0){
-                    HStack{
-                        Button(action:{self.presentationMode.wrappedValue.dismiss()} ){
-                            return Image(systemName: "chevron.left").foregroundColor(.coralRed)
+                        ZStack{
+                            Color.white.edgesIgnoringSafeArea(.all)
+                        VStack(spacing:0){
+                                HStack{
+                                    Button(action:{self.presentationMode.wrappedValue.dismiss()} ){
+                                        return Image(systemName: "chevron.left").foregroundColor(.coralRed)
+                                    }
+            //                        .frame(width:30, height:30)
+                                    .padding([.leading], self.navBarPaddingToLead)
+                                    .padding([.top], self.navBarPaddingToTop)
+                                    Spacer()
+                                }
+                                Spacer()
+                                ExDivider()
+                            }
                         }
-//                        .frame(width:30, height:30)
-                        .padding([.leading], self.navBarPaddingToLead)
-                        .padding([.top], self.navBarPaddingToTop)
-                        Spacer()
-                    }
-                    Spacer()
-                    ExDivider()
-                }
-            }
-            .frame(maxHeight: self.navBarMaxHeight)
-            .onAppear {
-                self.modelView.showDescriptionScreen(self.subscription)
-            }
-            List{
-                SubscriptionHeadView(subscription : subscription)
-                    .cardify(.head)
-                    .onAppear{
-                        print("\(self.subscription.imgName)+!!!!!!!+!!!!!!!")
-                    }
-                if subscription.imgName != nil{
-                    VStack{
-                        Spacer().frame(height: 10)
-                        FirebaseImage(id: subscription.imgName ?? "")
-                            .scaleEffect(x: 1.1, y: 1.1, anchor: .center)
-                    }
-                }
-                
-                SubscriptionSummaryView(subscription: subscription).cardify()
-                if subscription.dateNotice != nil{
-                    SubscriptionScheduleView(subscription : subscription).cardify()
-                }
-                SubscriptionPriceView(subscription : subscription, modelView: self.modelView)
-                    .cardify(.noTrail)
-                if subscription.naverLink != nil{
-                    SubscriptionLinkView(title: "네이버에서 보기", link : subscription.naverLink!).cardify(.small)
-                }
-                if subscription.officialLink != nil{
-                    SubscriptionLinkView(title: "청약홈에서 보기", link : subscription.officialLink!).cardify(.small)
-                }
-                Banner()
-                if subscription.documentLink != nil{
-                    SubscriptionLinkView(title: "공고 파일 보기", link : subscription.documentLink!).cardify(.small)
-                }
-                
-            }
-            .listRowInsets(EdgeInsets())
-            
+                        .frame(maxHeight: self.navBarMaxHeight)
+                        .onAppear {
+                            self.modelView.showDescriptionScreen(self.subscription)
+                        }
+                        List{
+                            SubscriptionHeadView(subscription : subscription)
+                                .cardify(.head)
+                            if subscription.imgName != nil{
+                                VStack{
+                                    Spacer().frame(height: 10)
+                                    FirebaseImage(id: subscription.imgName ?? "")
+                                        .scaleEffect(x: 1.1, y: 1.1, anchor: .center)
+                                }
+                            }
+                            
+                            SubscriptionSummaryView(subscription: subscription).cardify()
+                            if subscription.dateNotice != nil{
+                                SubscriptionScheduleView(subscription : subscription).cardify()
+                            }
+                            SubscriptionPriceView(subscription : subscription, modelView: self.modelView)
+                                .cardify(.noTrail)
+                            if (subscription.chosenHomeType != nil) && (subscription.subscriptionType == "민영") && (subscription.chosenHomeType?.estimatedScore != nil) && (subscription.firstOtherDidNotPassed){
+                                SubscriptionScoreView(homeType: subscription.chosenHomeType!, homeGuideModelView: self.modelView).cardify()
+                            }
+                            if subscription.naverLink != nil{
+                                SubscriptionLinkView(title: "네이버에서 보기", link : subscription.naverLink!).cardify(.small)
+                            }
+                            if subscription.officialLink != nil{
+                                SubscriptionLinkView(title: "청약홈에서 보기", link : subscription.officialLink!).cardify(.small)
+                            }
+                            Banner()
+                            if subscription.documentLink != nil{
+                                SubscriptionLinkView(title: "공고 파일 보기", link : subscription.documentLink!).cardify(.small)
+                            }
+                            
+                        }
+                        .listRowInsets(EdgeInsets())
+                        
 
+                        }
+                    .foregroundColor(.black)
+                    .navigationBarTitle("")
+                    .navigationBarHidden(true)
+            Group{
+//                여기는 점수 팝업 공간
+                if self.modelView.model.showHomeKeyPopUp{
+                    Color.grey.opacity(0.5).edgesIgnoringSafeArea(.all)
+                    HomeKeyPopoverView(homeKey: self.session.session?.userInfo.homeKey ?? 0)
+                }
             }
-        .foregroundColor(.black)
-        .navigationBarTitle("")
-        .navigationBarHidden(true)
-
+        }
     }
 }
 struct SubscriptionHeadView: View{
@@ -663,5 +672,110 @@ struct SubscriptionLinkView: View{
                   UIApplication.shared.open(myURL)
             }
         }.foregroundColor(Color.coralRed)
+    }
+}
+
+struct SubscriptionScoreView: View{
+    @EnvironmentObject var session : SessionStore
+    var homeType  : HomeGuideModel.HomeType
+    var homeGuideModelView : HomeModelView
+    // 애초에 가점 정보가 있고, 민영인지의 체크는 밖에서 하고 여기서는 계정만 체크
+    @State var showingAlert : Bool = false
+    var rewardAd = Rewarded()
+    let sectionTitleFontStyle = CustomFontStyle.sectionTitle
+    let paddingToTrail = CGFloat(40)
+    let paddingFromBodyToTitle = CGFloat(20)
+    var estimatedScoreToShow : String{
+        print("estimatedScoreToShow 호출")
+        if session.session?.userInfo.showingSubscriptionList.contains(homeType.homeTypeCode) ?? false{
+            return "\(homeType.estimatedScore!) 점"
+        }else{
+            return "??? 점"
+        }
+    }
+    let sectionSmallTitleFontStyle = CustomFontStyle.sectionSmallDescriptionB
+    func touchScore(){
+        if !(session.session?.userInfo.showingSubscriptionList.contains(homeType.homeTypeCode) ?? false){
+            if session.session?.userInfo.homeKey ?? 0 > 0 {
+                homeGuideModelView.setShowHomeKeyPopUp(true)
+                DispatchQueue.main.asyncAfter(deadline: .now()+1){
+                    self.session.useHomeKey(keyCount:1)
+                    self.session.addHomeType(homeType : self.homeType)
+                    DispatchQueue.main.asyncAfter(deadline: .now()+1){
+                        self.homeGuideModelView.setShowHomeKeyPopUp(false)
+                    }
+                }
+            }else{
+                showingAlert = true
+            }
+        }
+    }
+    func showAd(){
+        self.rewardAd.showAd(rewardFunction: adRewardFunction)
+    }
+    func adRewardFunction(){
+        self.homeGuideModelView.setShowHomeKeyPopUp(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+            self.session.addHomeKey(keyCount: 3)
+            DispatchQueue.main.asyncAfter(deadline: .now()+1){
+                self.session.useHomeKey(keyCount:1)
+                self.session.addHomeType(homeType : self.homeType)
+                DispatchQueue.main.asyncAfter(deadline: .now()+1){
+                    self.homeGuideModelView.setShowHomeKeyPopUp(false)
+                }
+            }
+        }
+    }
+    
+    var body : some View{
+        VStack{
+            VStack{
+                HStack{
+                    Text("청약 예상 가점")
+                        .adjustFont(fontStyle: self.sectionTitleFontStyle)
+                    Spacer()
+                        .frame(width:20)
+                    Text("AI 예측 Beta")
+                        .adjustFont(fontStyle: self.sectionSmallTitleFontStyle)
+                        .foregroundColor(.lightGrey)
+                    Spacer()
+                }
+                ExDivider()
+            }
+            HStack{
+                Spacer()
+                Group{
+                    if session.session?.isAnonymous ?? true {
+                        ZStack{
+                            HStack{
+                                Spacer()
+                            Text("평균 ???점")
+                                Spacer().frame(width: 20)
+                            }
+
+                            NavigationLink(destination: SignUpView()){
+                                Rectangle().opacity(0.0)
+                            }.buttonStyle(PlainButtonStyle())
+                        }
+                    }else{
+                        Text("평균 " + estimatedScoreToShow)
+                            .onTapGesture {
+                                self.touchScore()
+                        }
+                    }
+                }
+            }
+            .padding([.top], self.paddingFromBodyToTitle)
+            .alert(isPresented: $showingAlert) {
+                Alert(
+                    title: Text("홈키가 모자라요."),
+                    message: Text("광고를 보고 충전하시겠어요? 나중에 설정에서도 충전할 수 있어요."),
+                    primaryButton: .destructive(
+                        Text("광고보기"),
+                        action: {
+                            self.showAd()
+                }), secondaryButton: .cancel())
+            }
+        }
     }
 }

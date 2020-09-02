@@ -32,6 +32,7 @@ final class Loader : ObservableObject {
             }
         }
     }
+
 }
 
 let placeholder = UIImage(named: "building")!
@@ -42,6 +43,7 @@ struct FirebaseImage : View {
         self.id = id
         self.imageLoader = Loader(id)
     }
+
     var id : String
     @ObservedObject private var imageLoader : Loader
     

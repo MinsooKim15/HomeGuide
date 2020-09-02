@@ -11,10 +11,16 @@ import SwiftUI
 struct MainView: View {
     @ObservedObject var modelView : HomeModelView
     @State var navBarHidden: Bool = true
-    var anonymousAuth = AnonymousAuth()
+    @EnvironmentObject var session: SessionStore
     // 여기서 배경색 컨트롤
     let backgroundColorView: some View = Color(hex:"F0F0F0")
-    
+    func getUser(){
+        session.listen(){
+            if self.session.session == nil{
+                self.session.signInAnonymous()
+            }
+        }
+    }
     var body: some View {
             // 배경색
         NavigationView(){
@@ -32,6 +38,7 @@ struct MainView: View {
                                     List{
                                         // TODO : let index = array.firstIndex(of: item)를 이용해서 index를 받는다.
                                                 ForEach(modelView.model.subscriptions, id:\.self.id){subscription in
+                                                    
                                                     VStack{
                                                         ZStack(alignment:.leading){
                                                             Color.white
@@ -56,7 +63,7 @@ struct MainView: View {
                                                 UITableView.appearance().separatorStyle = .none
                                                 UITableViewCell.appearance().backgroundColor = .clear
                                             }
-                                            .onDisappear {       UITableView.appearance().separatorStyle = .singleLine     }
+//                                            .onDisappear {       UITableView.appearance().separatorStyle = .singleLine     }
 
                                 }else{
                                     VStack{
@@ -79,7 +86,7 @@ struct MainView: View {
                     self.navBarHidden = false
                 }
                 }
-            }
+            }.onAppear(perform: getUser)
     }
 }
 
@@ -97,7 +104,8 @@ struct HeadView: View{
     let maxHeight = CGFloat(80)
     let fontColorHighlight = Color(hex:"FF4162")
     let barColor: Color = Color.coralRed
-    
+    let settingIconSize = CGFloat(20)
+    let settingPaddingToTrailing = CGFloat(20)
     var body: some View{
         VStack(spacing:0){
             ZStack{
@@ -108,6 +116,22 @@ struct HeadView: View{
 //                        .foregroundColor(Color.white)
                         .padding([.leading], titlePaddingToLeading)
                     Spacer()
+                    NavigationLink(destination: SettingView(modelView: SettingModelView())){
+                        Image("Settings")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width:self.settingIconSize, height:self.settingIconSize)
+                            .padding([.trailing], self.settingPaddingToTrailing)
+                    }
+                    .onAppear {
+                        UITableView.appearance().backgroundColor = Color(hex:"F0F0F0").uiColor()
+                        UITableView.appearance().separatorStyle = .none
+                        UITableViewCell.appearance().backgroundColor = .clear
+                    }
+//                    .onDisappear {
+//                        UITableView.appearance().separatorStyle = .singleLine
+//
+//                    }
                 }
                 .foregroundColor(.black)
                 .padding([.top],headViewPaddingToTop)
@@ -265,6 +289,8 @@ struct FilterRowView : View{
     let optionDetailpaddingToTrail = CGFloat(20)
     let columnCount = 3
     let cellHeight = CGFloat(30)
+    
+
     var frameHeight: CGFloat{
         let rowCount =  Int(ceil(Double(filterCategory.optionList!.count)/Double(self.columnCount)))
         return CGFloat(rowCount) * self.cellHeight
@@ -349,6 +375,10 @@ struct SubscriptionCardView: View{
     let badgeBackgroundColor = Color.coralRed
     let badgeTextColor = Color.white
     let newBadgeBackgroundColor = Color.grey
+    // Label Setting
+    let highlightLabelBackgroundColor = Color.coralRed
+    let labelBackgroundColor = Color.lightOrange
+    let labelTextColor = Color.white
     var body: some View{
 //        GeometryReader{geometry in
                                 HStack{
@@ -430,9 +460,9 @@ struct SubscriptionCardView: View{
                                                         ZStack{
                                                             Rectangle()
                                                                 .fill()
-                                                                .foregroundColor(.coralRed)
+                                                                .foregroundColor(self.highlightLabelBackgroundColor)
                                                             Text(subscription.dateLeftInString!)
-                                                                .foregroundColor(.white)
+                                                                .foregroundColor(self.labelTextColor)
                                                                 .adjustFont(fontStyle: .sectionSmallDescriptionA)
                                                        }
                                                         .frame(width:80, height:20)
@@ -441,9 +471,9 @@ struct SubscriptionCardView: View{
                                                         ZStack{
                                                             Rectangle()
                                                                 .fill()
-                                                                .foregroundColor(.lightGrey)
+                                                                .foregroundColor(self.labelBackgroundColor)
                                                             Text(subscription.dateLeftInString!)
-                                                                .foregroundColor(.white)
+                                                                .foregroundColor(self.labelTextColor)
                                                                 .adjustFont(fontStyle: .sectionSmallDescriptionA)
                                                         }
                                                         .frame(width:70, height:20)
@@ -460,7 +490,6 @@ struct SubscriptionCardView: View{
                                     // TODO : Image 넣기 없으면 기본 이미지 로직까지 - 이미지는 먼 미래
                                 }
                                 .foregroundColor(.black)
-            
 //        }
     }
 }

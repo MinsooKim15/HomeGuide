@@ -14,11 +14,11 @@ import FirebaseFirestoreSwift
 import Firebase
 
 class HomeModelView:ObservableObject{
+    @EnvironmentObject var session : SessionStore
 
     @Published var model: HomeGuideModel = HomeModelView.createHomeGuideModel()
     init() {
         queryNewData()
-        print("done")
     }
     private static func createHomeGuideModel()-> HomeGuideModel{
         let filters : Array<Dictionary<String,Any>> = [
@@ -81,7 +81,9 @@ class HomeModelView:ObservableObject{
 
     func getData(){
         let db = Firestore.firestore()
-        db.collection("subscriptions").whereField("dateSecondOther", isGreaterThan: Date()).getDocuments{(querySnapshot, err) in
+
+        let calendar = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: Date())
+        db.collection("subscriptions").whereField("dateSecondOther", isGreaterThanOrEqualTo: calendar!).getDocuments{(querySnapshot, err) in
             if let err = err{
                 print("에러!: \(err)")
             }else{
@@ -120,6 +122,9 @@ class HomeModelView:ObservableObject{
             }
             model.choosenFilterCategory = model.filters[choosenIndex]
         }
+    }
+    func setShowHomeKeyPopUp(_ bool : Bool){
+        self.model.showHomeKeyPopUp = bool
     }
     func chooseFilterOption(filterCategory: HomeGuideModel.FilterCategory, filterOption: HomeGuideModel.FilterOption){
         model.isFilterChanged = true
@@ -173,7 +178,8 @@ class HomeModelView:ObservableObject{
         let db = Firestore.firestore()
         var hasBigQuery = false
         var bigQueryIndex = [Int]()
-        var query = db.collection("subscriptions").whereField("dateSecondOther", isGreaterThan: Date())
+        let calendar = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: Date())
+        var query = db.collection("subscriptions").whereField("dateSecondOther", isGreaterThanOrEqualTo: calendar!)
         var queryCounter = 0
         for (index,filter) in self.model.filters.enumerated(){
             queryCounter += 1
