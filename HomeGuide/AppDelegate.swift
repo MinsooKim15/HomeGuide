@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseFirestore
+import GoogleMaps
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,7 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         _ = Firestore.firestore()
-
+        var apiKey = Bundle.main.infoDictionary?["GoogleMapAPIKey"] as! String
+        GMSServices.provideAPIKey(apiKey)
       return true
     }
 

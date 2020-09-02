@@ -268,6 +268,7 @@ struct HomeGuideModel{
         var showHighlightLabel : Bool
         var chosenHomeType: HomeType?
         var noRankNotSpecified : Bool
+        var geocode : Geocode?
         var imgName : String?
         var iconName: String {
             if (self.buildingType == "아파트") || (self.buildingType == "apt"){
@@ -374,6 +375,9 @@ struct HomeGuideModel{
             highestPrice = getHighestPrice()
 
             (dateLeftInString, dateClose, showLabel,showHighlightLabel) = getDateLeftString()
+            if let geocodeDictionary = snapshotValue["geocode"] as? Dictionary<String,Any>{
+                geocode = Geocode(dictionary:geocodeDictionary)
+            }
         }
         
         func getEndDate()-> Date{

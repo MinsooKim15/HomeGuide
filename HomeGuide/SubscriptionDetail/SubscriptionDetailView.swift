@@ -34,6 +34,7 @@ struct SubscriptionDetailView : View{
                                 Spacer()
                                 ExDivider()
                             }
+                            
                         }
                         .frame(maxHeight: self.navBarMaxHeight)
                         .onAppear {
@@ -51,24 +52,39 @@ struct SubscriptionDetailView : View{
                             }
                             
                             SubscriptionSummaryView(subscription: subscription).cardify()
+                            
                             if subscription.dateNotice != nil{
                                 SubscriptionScheduleView(subscription : subscription).cardify()
                             }
+                            Group{
+                                if subscription.geocode != nil {
+                                    SubscriptionMapView(geocode: self.subscription.geocode!).cardify()
+                                }
+                            }
                             SubscriptionPriceView(subscription : subscription, modelView: self.modelView)
                                 .cardify(.noTrail)
-                            if (subscription.chosenHomeType != nil) && (subscription.subscriptionType == "민영") && (subscription.chosenHomeType?.estimatedScore != nil) && (subscription.firstOtherDidNotPassed){
-                                SubscriptionScoreView(homeType: subscription.chosenHomeType!, homeGuideModelView: self.modelView).cardify()
+                            Group{
+                                if (subscription.chosenHomeType != nil) && (subscription.subscriptionType == "민영") && (subscription.chosenHomeType?.estimatedScore != nil) && (subscription.firstOtherDidNotPassed){
+                                    SubscriptionScoreView(homeType: subscription.chosenHomeType!, homeGuideModelView: self.modelView).cardify()
+                                }
                             }
-                            if subscription.naverLink != nil{
-                                SubscriptionLinkView(title: "네이버에서 보기", link : subscription.naverLink!).cardify(.small)
+                            Group{
+                                if subscription.naverLink != nil{
+                                    SubscriptionLinkView(title: "네이버에서 보기", link : subscription.naverLink!).cardify(.small)
+                                }
                             }
-                            if subscription.officialLink != nil{
-                                SubscriptionLinkView(title: "청약홈에서 보기", link : subscription.officialLink!).cardify(.small)
+                            Group{
+                                if subscription.officialLink != nil{
+                                    SubscriptionLinkView(title: "청약홈에서 보기", link : subscription.officialLink!).cardify(.small)
+                                }
                             }
-                            Banner()
-                            if subscription.documentLink != nil{
-                                SubscriptionLinkView(title: "공고 파일 보기", link : subscription.documentLink!).cardify(.small)
+                            Group{
+                                Banner()
+                                if subscription.documentLink != nil{
+                                    SubscriptionLinkView(title: "공고 파일 보기", link : subscription.documentLink!).cardify(.small)
+                                }
                             }
+                            
                             
                         }
                         .listRowInsets(EdgeInsets())
@@ -776,6 +792,35 @@ struct SubscriptionScoreView: View{
                             self.showAd()
                 }), secondaryButton: .cancel())
             }
+        }
+    }
+}
+
+struct SubscriptionMapView : View{
+    var geocode : Geocode
+    let sectionTitleFontStyle = CustomFontStyle.sectionTitle
+    let paddingToTrail = CGFloat(40)
+    let paddingFromBodyToTitle = CGFloat(10)
+    var body : some View{
+        VStack{
+            Group{
+                HStack{
+                    Text("위치")
+                        .adjustFont(fontStyle: self.sectionTitleFontStyle)
+                    Spacer()
+                }
+                ExDivider()
+            }
+            Group{
+                ZStack{
+                    GoogleMapView(geocode:geocode).frame(minHeight : 200, maxHeight:200)
+                    NavigationLink(destination:GoogleMapWholeView(geocode:self.geocode) ){
+                        Color.white.opacity(0.00000001)
+                    }
+                }
+            }
+            
+            .padding([.top], self.paddingFromBodyToTitle)
         }
     }
 }

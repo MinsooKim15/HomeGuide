@@ -11,7 +11,7 @@ struct CustomNavigationBar : View{
     let navBarPaddingToLead = CGFloat(20)
     let navBarPaddingToTop = CGFloat(20)
     let navBarMaxHeight = CGFloat(50)
-    let navBarBackButtonSize = CGFloat(30)
+    let navBarBackButtonSize = CGFloat(40)
     let titleFontColor = Color.black
     let titleFontStyle = CustomFontStyle.sectionTitle
     var hasTitleText : Bool

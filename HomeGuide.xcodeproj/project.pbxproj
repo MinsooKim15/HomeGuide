@@ -14,7 +14,8 @@
 		0204EA0C24B868A8001D8B6F /* MultiSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0B24B868A8001D8B6F /* MultiSlider.swift */; };
 		0204EA0E24B868C8001D8B6F /* MultiSliderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */; };
 		0204EA1024B868E6001D8B6F /* MultiValueSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */; };
-		0219A4C124FF6C2C00AF1EB1 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219A4C024FF6C2C00AF1EB1 /* MapView.swift */; };
+		0219A4C124FF6C2C00AF1EB1 /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219A4C024FF6C2C00AF1EB1 /* GoogleMapView.swift */; };
+		0219A4C424FF6E2100AF1EB1 /* Geocode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219A4C324FF6E2100AF1EB1 /* Geocode.swift */; };
 		0225DD6A24CF188E00830B12 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0225DD6924CF188E00830B12 /* CoreTelephony.framework */; };
 		0225EAB424F6939600AA2BFA /* GADRewardedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225EAB324F6939600AA2BFA /* GADRewardedViewController.swift */; };
 		027CEBA024D5B20E00FDDD6B /* FirebaseImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027CEB9F24D5B20E00FDDD6B /* FirebaseImage.swift */; };
@@ -81,7 +82,8 @@
 		0204EA0B24B868A8001D8B6F /* MultiSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSlider.swift; sourceTree = "<group>"; };
 		0204EA0D24B868C8001D8B6F /* MultiSliderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderExtensions.swift; sourceTree = "<group>"; };
 		0204EA0F24B868E6001D8B6F /* MultiValueSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiValueSlider.swift; sourceTree = "<group>"; };
-		0219A4C024FF6C2C00AF1EB1 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		0219A4C024FF6C2C00AF1EB1 /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
+		0219A4C324FF6E2100AF1EB1 /* Geocode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geocode.swift; sourceTree = "<group>"; };
 		0225DD6924CF188E00830B12 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		0225EAB324F6939600AA2BFA /* GADRewardedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GADRewardedViewController.swift; sourceTree = "<group>"; };
 		025D424F24BF20B500098A2A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -261,7 +263,7 @@
 				02E11DC124F557EA002C9A48 /* ImageView.swift */,
 				027CEB9F24D5B20E00FDDD6B /* FirebaseImage.swift */,
 				02D0D78524F7DF3200AF4611 /* HomeKeyPopover.swift */,
-				0219A4C024FF6C2C00AF1EB1 /* MapView.swift */,
+				0219A4C024FF6C2C00AF1EB1 /* GoogleMapView.swift */,
 			);
 			path = CommonUI;
 			sourceTree = "<group>";
@@ -322,6 +324,7 @@
 			children = (
 				02F78FC824F8F16C00D0A645 /* CompetitionRate.swift */,
 				02F78FCA24F8F25800D0A645 /* WinnigScore.swift */,
+				0219A4C324FF6E2100AF1EB1 /* Geocode.swift */,
 			);
 			path = SubModels;
 			sourceTree = "<group>";
@@ -601,8 +604,9 @@
 				02D0D78624F7DF3200AF4611 /* HomeKeyPopover.swift in Sources */,
 				02E11DBC24F4E3CB002C9A48 /* EndEditing.swift in Sources */,
 				02B4A54C24EFB316006CFDC2 /* SignInView.swift in Sources */,
+				0219A4C424FF6E2100AF1EB1 /* Geocode.swift in Sources */,
 				02E17A2524CB1A58003BCF1F /* AdfitBannerViewController.swift in Sources */,
-				0219A4C124FF6C2C00AF1EB1 /* MapView.swift in Sources */,
+				0219A4C124FF6C2C00AF1EB1 /* GoogleMapView.swift in Sources */,
 				02810A3C24F3868900394094 /* SignUpView.swift in Sources */,
 				0204EA1024B868E6001D8B6F /* MultiValueSlider.swift in Sources */,
 				02E5882324A4EF3200237AB3 /* HomeModelView.swift in Sources */,

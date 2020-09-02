@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GoogleMapAPIKey</key>
+	<string>$(GOOGLE_API_KEY)</string>
 	<key>AdfitBannerId</key>
 	<string>$(ADFIT_BANNER_ID)</string>
 	<key>BannerId</key>
